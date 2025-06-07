@@ -1,12 +1,12 @@
 """
 Advanced logging configuration for SentinelPy CLI.
 
-This module provides a unified logging system with:
+Provides:
 - Custom SUCCESS level (25)
 - Context-aware logging with tags
-- Rich console output with custom theme
+- Rich console output with color themes
 - Rotating file logs
-- Clean and maintainable API
+- Clean, single-file maintainable API
 """
 
 import logging
@@ -14,7 +14,7 @@ import shutil
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Any
 
 try:
     from rich.logging import RichHandler
@@ -24,31 +24,28 @@ try:
 except ImportError:
     RICH_AVAILABLE = False
 
-# Custom log level
+# Define custom log level
 SUCCESS = 25
 logging.addLevelName(SUCCESS, "SUCCESS")
 
+# Patch logger with .success()
 def success(self, msg, *args, **kwargs):
-    """Add success method to Logger class."""
     if self.isEnabledFor(SUCCESS):
         self._log(SUCCESS, msg, args, **kwargs)
-
 logging.Logger.success = success
 
+# Context tag filter
 class ContextFilter(logging.Filter):
-    """Filter to add context tags to log records."""
-    
     def __init__(self, context: Optional[str] = None):
         super().__init__()
         self.context = context
 
     def filter(self, record: logging.LogRecord) -> bool:
-        record.context = f"[{self.context}] " if self.context else ""
+        record.context = f"[{self.context}]" if self.context else "[]"
         return True
 
+# Custom rich handler for console display
 class CustomRichHandler(RichHandler):
-    """Enhanced Rich handler with custom theme and context support."""
-    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.console = Console(theme=Theme({
@@ -65,62 +62,26 @@ class CustomRichHandler(RichHandler):
             return "[bold green]SUCCESS[/bold green]"
         return super().get_level_text(record)
 
-    def format(self, record: logging.LogRecord) -> str:
-        if hasattr(record, 'context'):
-            record.msg = f"{record.context}{record.msg}"
-        return super().format(record)
-
-def log_with_context(logger: logging.Logger, level: int, msg: str, *args, context: Optional[str] = None, **kwargs) -> None:
-    """
-    Log a message with context tag.
-    
-    Args:
-        logger: Logger instance
-        level: Log level
-        msg: Message to log
-        *args: Additional positional arguments for string formatting
-        context: Optional context tag (e.g., "SCAN")
-        **kwargs: Additional logging parameters
-    """
-    context_filter = ContextFilter(context)
-    logger.addFilter(context_filter)
-    try:
-        logger.log(level, msg, *args, **kwargs)
-    finally:
-        logger.removeFilter(context_filter)
-
+# Setup logger
 def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
-    """
-    Configure and return a logger with console and file handlers.
-    
-    Args:
-        logfile: Log filename. If None, uses 'scanner.log'
-    
-    Returns:
-        logging.Logger: Configured logger
-    """
-    # Create logs directory
     logs_dir = Path("logs")
     logs_dir.mkdir(exist_ok=True)
-    
-    # Configure log filename
-    log_filename = logfile if logfile else "scanner.log"
+
+    log_filename = logfile or "scanner.log"
     log_path = logs_dir / log_filename
-    
-    # Create logger
+
     logger = logging.getLogger("sentinelpy")
     logger.setLevel(logging.DEBUG)
-    
-    # Avoid multiple handlers
+
     if logger.handlers:
-        return logger
-    
-    # Log format for file handler
-    file_format = "[%(asctime)s] %(levelname)s - %(message)s"
-    date_format = "%Y-%m-%d %H:%M:%S"
+        return logger  # Already configured
+
+    # FILE format
+    file_format = "[%(asctime)s] %(levelname)-8s | %(context)s %(message)s"
+    date_format = "%d-%m-%Y %H:%M:%S"
     file_formatter = logging.Formatter(file_format, date_format)
-    
-    # Console handler (INFO level) with Rich if available
+
+    # CONSOLE handler with rich
     if RICH_AVAILABLE:
         console_handler = CustomRichHandler(
             level=logging.INFO,
@@ -131,47 +92,54 @@ def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
             enable_link_path=False,
             show_level=True
         )
+    
     else:
-        console_handler = logging.StreamHandler()
+        console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         console_handler.setFormatter(file_formatter)
-    
-    # File handler (DEBUG level) with rotation
+
+    # FILE handler
     file_handler = RotatingFileHandler(
-        log_path,
-        maxBytes=10*1024*1024,  # 10MB
-        backupCount=5,
-        encoding='utf-8'
+        log_path, maxBytes=10 * 1024 * 1024,
+        backupCount=5, encoding='utf-8'
     )
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(file_formatter)
-    
-    # Add handlers to logger
+
+    # Register handlers
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
-    
+
     return logger
 
+# Contextual log wrapper
+def log_with_context(
+    logger: logging.Logger,
+    level: int,
+    msg: str,
+    *args: Any,
+    context: Optional[str] = None,
+    **kwargs: Any
+) -> None:
+    context_filter = ContextFilter(context)
+    logger.addFilter(context_filter)
+    try:
+        logger.log(level, msg, *args, **kwargs)
+    finally:
+        logger.removeFilter(context_filter)
+
+# Util: clear log directory
 def clear_logs() -> None:
-    """Clear all log files from the logs directory."""
     logs_dir = Path("logs")
     if logs_dir.exists():
         shutil.rmtree(logs_dir)
-        logs_dir.mkdir(exist_ok=True)
+    logs_dir.mkdir(exist_ok=True)
 
+# Util: display log file content
 def show_logs(logfile: Optional[str] = None) -> str:
-    """
-    Read and return the contents of a log file.
-    
-    Args:
-        logfile: Log filename to read. If None, reads 'scanner.log'
-    
-    Returns:
-        str: Contents of the log file
-    """
-    log_filename = logfile if logfile else "scanner.log"
+    log_filename = logfile or "scanner.log"
     log_path = Path("logs") / log_filename
-    
+
     if not log_path.exists():
         return f"No log file found at {log_path}"
     
@@ -180,3 +148,4 @@ def show_logs(logfile: Optional[str] = None) -> str:
             return f.read()
     except Exception as e:
         return f"Error reading log file: {str(e)}"
+
