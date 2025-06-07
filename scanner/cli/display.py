@@ -13,13 +13,37 @@ def display_results(results: Dict[str, Any]) -> None:
     logger = logging.getLogger("sentinelpy")
     log_with_context(logger, logging.DEBUG, "Rendering results to stdout", context="DISPLAY")
     
-    # Format and display results
+    # Prepare data
+    open_ports = results.get("open_ports") or []
+    scan_results = results.get("scan_results") or []
+
+    # Find max width for port and status columns
+    port_width = max([len(str(r["port"])) for r in scan_results] + [4])  # at least 'Port'
+    status_width = max([len(r["status"]) for r in scan_results] + [6])   # at least 'Status'
+    service_width = max([len(r.get("service") or "") for r in scan_results] + [7])  # at least 'Service'
+
+    # Header
     print("\nScan Results:")
     print("-" * 50)
-    
-    for port, status in results.items():
-        print(f"Port {port}: {status}")
-    
+
+    # Open ports section
+    if open_ports:
+        open_ports_str = ", ".join(str(p) for p in open_ports)
+    else:
+        open_ports_str = "None"
+    print(f"Open ports: {open_ports_str}")
+
+    # Scanned ports section
+    print("Scanned ports:")
+    for r in scan_results:
+        port = str(r["port"]).rjust(port_width)
+        status = r["status"].ljust(status_width)
+        service = r.get("service") or ""
+        if service:
+            print(f"  - {port}: {status}  ({service})")
+        else:
+            print(f"  - {port}: {status}")
+
     print("-" * 50)
     log_with_context(logger, logging.INFO, "Results displayed successfully", context="DISPLAY")
 
