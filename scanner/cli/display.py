@@ -11,7 +11,7 @@ def display_results(results: Dict[str, Any]) -> None:
         results: Dictionary containing scan results
     """
     logger = logging.getLogger("sentinelpy")
-    log_with_context(logger, logging.DEBUG, "Rendering results to stdout", "DISPLAY")
+    log_with_context(logger, logging.DEBUG, "Rendering results to stdout", context="DISPLAY")
     
     # Format and display results
     print("\nScan Results:")
@@ -21,7 +21,7 @@ def display_results(results: Dict[str, Any]) -> None:
         print(f"Port {port}: {status}")
     
     print("-" * 50)
-    log_with_context(logger, logging.INFO, "Results displayed successfully", "DISPLAY")
+    log_with_context(logger, logging.INFO, "Results displayed successfully", context="DISPLAY")
 
 def handle_output(results: Dict[str, Any], args: Any) -> None:
     """
@@ -34,21 +34,21 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
     logger = logging.getLogger("sentinelpy")
     
     if args.json:
-        log_with_context(logger, logging.INFO, f"Exporting results to {args.json}", "EXPORT")
+        log_with_context(logger, logging.INFO, f"Exporting results to {args.json}", context="EXPORT")
         try:
             import json
             with open(args.json, 'w') as f:
                 json.dump(results, f, indent=2)
-            log_with_context(logger, logging.INFO, "Results exported successfully", "EXPORT")
+            log_with_context(logger, logging.INFO, "Results exported successfully", context="EXPORT")
         except Exception as e:
-            log_with_context(logger, logging.ERROR, f"Export failed: {str(e)}", "EXPORT")
+            log_with_context(logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT")
             raise
     
     if args.print_json:
-        log_with_context(logger, logging.DEBUG, "Printing results as JSON", "EXPORT")
+        log_with_context(logger, logging.DEBUG, "Printing results as JSON", context="EXPORT")
         import json
         print(json.dumps(results, indent=2))
-        log_with_context(logger, logging.INFO, "Results printed as JSON", "EXPORT")
+        log_with_context(logger, logging.INFO, "Results printed as JSON", context="EXPORT")
 
     else:
         # Default: export with an auto-generated name or default behavior

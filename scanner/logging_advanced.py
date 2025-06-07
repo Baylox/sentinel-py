@@ -115,19 +115,19 @@ def log_with_context(
     logger: logging.Logger,
     level: int,
     msg: str,
-    context: str,
     *args: Any,
+    context: str = "GENERAL",
     **kwargs: Any
 ) -> None:
     """
     Log a message with specific context.
-    
+
     Args:
         logger: Logger to use
         level: Log level
         msg: Message to log
-        context: Message context
         *args: Additional arguments
+        context: Message context (default: GENERAL)
         **kwargs: Additional keyword arguments
     """
     extra = kwargs.pop('extra', {})
