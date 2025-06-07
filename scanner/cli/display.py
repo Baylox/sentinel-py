@@ -1,38 +1,55 @@
-from pprint import pprint
+import logging
+from typing import Dict, Any
+from scanner.logging_advanced import log_with_context
 from scanner.utils.exporter import export_to_json
 
-def display_results(results: dict):
+def display_results(results: Dict[str, Any]) -> None:
     """
-    Display the results of the port scan in a readable format.
-
+    Display scan results to the user with logging.
+    
     Args:
-        results (dict): Dictionary containing scan results.
+        results: Dictionary containing scan results
     """
-    if results["open_ports"]:
-        print("\nOpen ports found:")
-        for port in results["open_ports"]:
-            port_info = next(r for r in results["scan_results"] if r["port"] == port)
-            service = f" ({port_info['service']})" if port_info['service'] else ""
-            print(f"  Port {port}{service}")
-    else:
-        print("\nNo open ports found.")
+    logger = logging.getLogger("sentinelpy")
+    log_with_context(logger, logging.DEBUG, "Rendering results to stdout", "DISPLAY")
+    
+    # Format and display results
+    print("\nScan Results:")
+    print("-" * 50)
+    
+    for port, status in results.items():
+        print(f"Port {port}: {status}")
+    
+    print("-" * 50)
+    log_with_context(logger, logging.INFO, "Results displayed successfully", "DISPLAY")
 
-    print(f"\nScan complete: {len(results['scan_results'])} ports scanned.")
-
-def handle_output(results: dict, args):
+def handle_output(results: Dict[str, Any], args: Any) -> None:
     """
-    Handle how the scan results are output based on CLI options.
-
+    Handle output/export of scan results with logging.
+    
     Args:
-        results (dict): Scan result data.
-        args (argparse.Namespace): Parsed CLI arguments.
+        results: Dictionary containing scan results
+        args: Command line arguments
     """
+    logger = logging.getLogger("sentinelpy")
+    
     if args.json:
-        # Export to a specified JSON file
-        export_to_json(results, args.json)
-    elif args.print_json:
-        # Print results as formatted JSON to stdout
-        pprint(results)
+        log_with_context(logger, logging.INFO, f"Exporting results to {args.json}", "EXPORT")
+        try:
+            import json
+            with open(args.json, 'w') as f:
+                json.dump(results, f, indent=2)
+            log_with_context(logger, logging.INFO, "Results exported successfully", "EXPORT")
+        except Exception as e:
+            log_with_context(logger, logging.ERROR, f"Export failed: {str(e)}", "EXPORT")
+            raise
+    
+    if args.print_json:
+        log_with_context(logger, logging.DEBUG, "Printing results as JSON", "EXPORT")
+        import json
+        print(json.dumps(results, indent=2))
+        log_with_context(logger, logging.INFO, "Results printed as JSON", "EXPORT")
+
     else:
         # Default: export with an auto-generated name or default behavior
         export_to_json(results) 
