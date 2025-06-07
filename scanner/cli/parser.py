@@ -131,6 +131,15 @@ def parse_args():
     output_opts.add_argument('--print-json', action='store_true',
                            help='Print scan results as raw JSON to stdout')
 
+    # Logging options group
+    logging_opts = parser.add_argument_group('Logging options')
+    logging_opts.add_argument('--logfile', metavar='FILENAME',
+                            help='Write logs to custom log file (default: logs/scanner.log)')
+    logging_opts.add_argument('--show-logs', action='store_true',
+                            help='Print logs to console after execution')
+    logging_opts.add_argument('--clear-logs', action='store_true',
+                            help='Clear log file before starting')
+
     # Utility operations group
     utility_opts = parser.add_argument_group('Utility operations')
     utility_opts.add_argument('--clean-exports', action='store_true',

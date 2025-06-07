@@ -34,6 +34,25 @@ python main.py --clean-exports
 ```bash
 python main.py --list-exports
 ```
+### Tests and Logs
+```bash
+# Basic scan test
+python main.py localhost 20-25
+```
+```bash
+# Scan with custom log file
+python main.py localhost 20-25 --logfile test.log
+```
+
+```bash
+# Scan with log cleanup and log display
+python main.py localhost 20-25 --clear-logs --show-logs
+```
+
+```bash
+# Full scan test with all logging options
+python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
+```
 
 ## Project Roadmap
 

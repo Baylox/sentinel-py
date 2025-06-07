@@ -1,38 +1,79 @@
-from pprint import pprint
+import logging
+from typing import Dict, Any
+from scanner.logging_advanced import log_with_context
 from scanner.utils.exporter import export_to_json
 
-def display_results(results: dict):
+def display_results(results: Dict[str, Any]) -> None:
     """
-    Display the results of the port scan in a readable format.
-
+    Display scan results to the user with logging.
+    
     Args:
-        results (dict): Dictionary containing scan results.
+        results: Dictionary containing scan results
     """
-    if results["open_ports"]:
-        print("\nOpen ports found:")
-        for port in results["open_ports"]:
-            port_info = next(r for r in results["scan_results"] if r["port"] == port)
-            service = f" ({port_info['service']})" if port_info['service'] else ""
-            print(f"  Port {port}{service}")
+    logger = logging.getLogger("sentinelpy")
+    log_with_context(logger, logging.DEBUG, "Rendering results to stdout", context="DISPLAY")
+    
+    # Prepare data
+    open_ports = results.get("open_ports") or []
+    scan_results = results.get("scan_results") or []
+
+    # Find max width for port and status columns
+    port_width = max([len(str(r["port"])) for r in scan_results] + [4])  # at least 'Port'
+    status_width = max([len(r["status"]) for r in scan_results] + [6])   # at least 'Status'
+    service_width = max([len(r.get("service") or "") for r in scan_results] + [7])  # at least 'Service'
+
+    # Header
+    print("\nScan Results:")
+    print("-" * 50)
+
+    # Open ports section
+    if open_ports:
+        open_ports_str = ", ".join(str(p) for p in open_ports)
     else:
-        print("\nNo open ports found.")
+        open_ports_str = "None"
+    print(f"Open ports: {open_ports_str}")
 
-    print(f"\nScan complete: {len(results['scan_results'])} ports scanned.")
+    # Scanned ports section
+    print("Scanned ports:")
+    for r in scan_results:
+        port = str(r["port"]).rjust(port_width)
+        status = r["status"].ljust(status_width)
+        service = r.get("service") or ""
+        if service:
+            print(f"  - {port}: {status}  ({service})")
+        else:
+            print(f"  - {port}: {status}")
 
-def handle_output(results: dict, args):
+    print("-" * 50)
+    log_with_context(logger, logging.INFO, "Results displayed successfully", context="DISPLAY")
+
+def handle_output(results: Dict[str, Any], args: Any) -> None:
     """
-    Handle how the scan results are output based on CLI options.
-
+    Handle output/export of scan results with logging.
+    
     Args:
-        results (dict): Scan result data.
-        args (argparse.Namespace): Parsed CLI arguments.
+        results: Dictionary containing scan results
+        args: Command line arguments
     """
+    logger = logging.getLogger("sentinelpy")
+    
     if args.json:
-        # Export to a specified JSON file
-        export_to_json(results, args.json)
-    elif args.print_json:
-        # Print results as formatted JSON to stdout
-        pprint(results)
+        log_with_context(logger, logging.INFO, f"Exporting results to {args.json}", context="EXPORT")
+        try:
+            import json
+            with open(args.json, 'w') as f:
+                json.dump(results, f, indent=2)
+            log_with_context(logger, logging.INFO, "Results exported successfully", context="EXPORT")
+        except Exception as e:
+            log_with_context(logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT")
+            raise
+    
+    if args.print_json:
+        log_with_context(logger, logging.DEBUG, "Printing results as JSON", context="EXPORT")
+        import json
+        print(json.dumps(results, indent=2))
+        log_with_context(logger, logging.INFO, "Results printed as JSON", context="EXPORT")
+
     else:
         # Default: export with an auto-generated name or default behavior
         export_to_json(results) 
