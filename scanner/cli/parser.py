@@ -130,6 +130,8 @@ def parse_args():
                            help='Export scan results to a JSON file')
     output_opts.add_argument('--print-json', action='store_true',
                            help='Print scan results as raw JSON to stdout')
+    output_opts.add_argument('--logfile', metavar='FILENAME',
+                           help='Specify a custom log file (default: scanner.log)')
 
     # Utility operations group
     utility_opts = parser.add_argument_group('Utility operations')
@@ -137,6 +139,10 @@ def parse_args():
                             help='Remove all existing JSON exports before scanning')
     utility_opts.add_argument('--list-exports', action='store_true',
                             help='List all existing JSON exports')
+    utility_opts.add_argument('--clear-logs', action='store_true',
+                            help='Clear all log files before scanning')
+    utility_opts.add_argument('--show-logs', action='store_true',
+                            help='Display the contents of the log file after scanning')
 
     args = parser.parse_args(remaining_args)
     
