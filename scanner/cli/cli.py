@@ -4,8 +4,7 @@ from scanner import scan_ports, PortScannerError
 from scanner.cli.parser import parse_args, CLIValidationError
 from scanner.cli.display import display_results, handle_output
 from scanner.cli.handlers import handle_utility_operations
-from scanner.logging_advanced import setup_advanced_logger, log_with_context, SUCCESS
-from scanner.logging_config import clear_logs, show_logs
+from scanner.logger import setup_logger, log_with_context, SUCCESS, clear_logs, show_logs
 
 def run_cli():
     """
@@ -23,7 +22,7 @@ def run_cli():
             clear_logs()
         
         # Setup logger with custom logfile if specified
-        logger = setup_advanced_logger(args.logfile if hasattr(args, 'logfile') else None)
+        logger = setup_logger(args.logfile if hasattr(args, 'logfile') else None)
         log_with_context(logger, logging.DEBUG, "CLI started with arguments: %s", args, context="CLI")
 
         # Handle utility operations first

@@ -1,5 +1,6 @@
 from .core.scanner import PortScanner
 from .exceptions import PortScannerError, PortRangeError, HostResolutionError
+from .logger import setup_logger, log_with_context, SUCCESS, clear_logs, show_logs
 
 def scan_ports(host: str, ports_range: str, timeout: float = 0.5) -> dict:
     """
@@ -23,5 +24,10 @@ __all__ = [
     'PortScanner',
     'PortScannerError',
     'PortRangeError',
-    'HostResolutionError'
+    'HostResolutionError',
+    'setup_logger',
+    'log_with_context',
+    'SUCCESS',
+    'clear_logs',
+    'show_logs'
 ] 
