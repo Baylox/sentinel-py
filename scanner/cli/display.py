@@ -1,6 +1,6 @@
 import logging
 from typing import Dict, Any
-from scanner.logger import log_with_context
+from scanner.logging.logger import log_with_context
 from scanner.utils.exporter import export_to_json
 
 def display_results(results: Dict[str, Any]) -> None:

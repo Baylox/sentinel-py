@@ -5,13 +5,8 @@ from scanner import scan_ports, PortScannerError
 from scanner.cli.parser import parse_args, CLIValidationError
 from scanner.cli.display import display_results, handle_output
 from scanner.cli.handlers import handle_utility_operations
-from scanner.logger import (
-    setup_logger,
-    log_with_context,
-    SUCCESS,
-    clear_logs,
-    show_logs,
-)
+from scanner.logging import setup_logger, log_with_context, SUCCESS
+from scanner.utils.logging_tools import clear_logs, show_logs
 
 
 def run_cli():
@@ -52,7 +47,7 @@ def handle_clear_logs_flag():
 
     if args.clear_logs:
         clear_logs()
-        print("[✔] Logs deleted.")
+        print("Logs deleted.")
         return True
     return False
 
