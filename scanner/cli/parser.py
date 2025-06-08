@@ -147,6 +147,12 @@ def parse_args():
     utility_opts.add_argument('--list-exports', action='store_true',
                             help='List all existing JSON exports')
 
+    # Display options group
+    display_opts = parser.add_argument_group('Display options')
+    display_opts.add_argument('--verbose', action='store_true',
+                            help='Show all ports scanned, including closed ones')
+
+
     args = parser.parse_args(remaining_args)
     
     # Validate arguments in order of importance
