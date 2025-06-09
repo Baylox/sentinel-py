@@ -27,4 +27,3 @@ def test_scan_ports_closed(mock_socket_class):
     assert 81 not in result["open_ports"]
     assert result["scan_results"][0]["status"] == "closed"
     assert result["scan_results"][0]["port"] == 81
-
