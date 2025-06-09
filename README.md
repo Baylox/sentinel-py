@@ -54,6 +54,25 @@ python main.py localhost 20-25 --clear-logs --show-logs
 python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
 ```
 
+## Flake8
+
+Flake8 commands to check code quality and detect common errors:
+
+```bash
+# Full analysis with sorted results
+flake8 scanner/ tests/ --format=default | sort
+```
+
+```bash
+# Search for style errors (E) and failures (F) or other
+flake8 scanner/ tests/ --select=F,E
+```
+
+```bash
+# Search only for "Failure" errors (F) or other
+flake8 scanner/ tests/ --select=F 
+```
+
 ## Project Roadmap
 
 The [roadmap](./docs/ROADMAP.md) outlines upcoming features, milestones, and future improvements.
