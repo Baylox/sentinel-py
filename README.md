@@ -1,5 +1,9 @@
 SentinelPy is a lightweight, modular vulnerability scanner built in Python. It performs local security checks such as port scanning, SSL certificate analysis, and HTTP header inspection. Designed for learning, auditing, and internal testing.
 
+```bash
+.\.venv\Scripts\Activate
+```
+
 ## Usage Examples
 
 ```bash
