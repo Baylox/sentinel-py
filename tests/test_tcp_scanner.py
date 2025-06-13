@@ -1,11 +1,12 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from scanner.core.scanner import PortScanner
+
 
 @patch("scanner.core.scanner.socket.socket")
 def test_scan_ports_open(mock_socket_class):
     mock_socket = MagicMock()
-    mock_socket.connect_ex.return_value = 0 
+    mock_socket.connect_ex.return_value = 0
     mock_socket_class.return_value.__enter__.return_value = mock_socket
 
     scanner = PortScanner(timeout=0.1)
@@ -15,10 +16,11 @@ def test_scan_ports_open(mock_socket_class):
     assert result["scan_results"][0]["status"] == "open"
     assert result["scan_results"][0]["port"] == 80
 
+
 @patch("scanner.core.scanner.socket.socket")
 def test_scan_ports_closed(mock_socket_class):
     mock_socket = MagicMock()
-    mock_socket.connect_ex.return_value = 1  
+    mock_socket.connect_ex.return_value = 1
     mock_socket_class.return_value.__enter__.return_value = mock_socket
 
     scanner = PortScanner()
