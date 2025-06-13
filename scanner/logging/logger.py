@@ -3,12 +3,13 @@ import shutil
 import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Optional, Any
+from typing import Any, Optional
 
 try:
-    from rich.logging import RichHandler
     from rich.console import Console
+    from rich.logging import RichHandler
     from rich.theme import Theme
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -17,11 +18,15 @@ except ImportError:
 SUCCESS = 25
 logging.addLevelName(SUCCESS, "SUCCESS")
 
+
 # Add success() method to Logger
 def success(self, msg, *args, **kwargs):
     if self.isEnabledFor(SUCCESS):
         self._log(SUCCESS, msg, args, **kwargs)
+
+
 logging.Logger.success = success
+
 
 # Filter to inject context tags into log records
 class ContextFilter(logging.Filter):
@@ -33,23 +38,29 @@ class ContextFilter(logging.Filter):
         record.context = f"[{self.context}]" if self.context else "[]"
         return True
 
+
 # Rich console handler with custom theme and SUCCESS support
 class CustomRichHandler(RichHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.console = Console(theme=Theme({
-            "logging.level.success": "bold green",
-            "logging.level.info": "bold blue",
-            "logging.level.warning": "bold yellow",
-            "logging.level.error": "bold red",
-            "logging.level.critical": "bold red reverse",
-            "logging.context": "cyan",
-        }))
+        self.console = Console(
+            theme=Theme(
+                {
+                    "logging.level.success": "bold green",
+                    "logging.level.info": "bold blue",
+                    "logging.level.warning": "bold yellow",
+                    "logging.level.error": "bold red",
+                    "logging.level.critical": "bold red reverse",
+                    "logging.context": "cyan",
+                }
+            )
+        )
 
     def get_level_text(self, record: logging.LogRecord) -> str:
         if record.levelno == SUCCESS:
             return "[bold green]SUCCESS[/bold green]"
         return super().get_level_text(record)
+
 
 # Main logger setup function
 def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
@@ -78,7 +89,7 @@ def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
             show_time=True,
             show_path=False,
             enable_link_path=False,
-            show_level=True
+            show_level=True,
         )
     else:
         console_handler = logging.StreamHandler(sys.stdout)
@@ -87,8 +98,7 @@ def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
 
     # Rotating file handler for persistent logs
     file_handler = RotatingFileHandler(
-        log_path, maxBytes=10 * 1024 * 1024,
-        backupCount=5, encoding='utf-8'
+        log_path, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8"
     )
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(file_formatter)
@@ -98,6 +108,7 @@ def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
 
     return logger
 
+
 # Log with contextual tag
 def log_with_context(
     logger: logging.Logger,
@@ -105,7 +116,7 @@ def log_with_context(
     msg: str,
     *args: Any,
     context: Optional[str] = None,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> None:
     context_filter = ContextFilter(context)
     logger.addFilter(context_filter)
@@ -114,12 +125,14 @@ def log_with_context(
     finally:
         logger.removeFilter(context_filter)
 
+
 # Utility: clear the entire logs directory
 def clear_logs() -> None:
     logs_dir = Path("logs")
     if logs_dir.exists():
         shutil.rmtree(logs_dir)
     logs_dir.mkdir(exist_ok=True)
+
 
 # Utility: read and return the content of the current log file
 def show_logs(logfile: Optional[str] = None) -> str:
@@ -130,7 +143,7 @@ def show_logs(logfile: Optional[str] = None) -> str:
         return f"No log file found at {log_path}"
 
     try:
-        with open(log_path, 'r', encoding='utf-8') as f:
+        with open(log_path, "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
         return f"Error reading log file: {str(e)}"
