@@ -4,6 +4,10 @@ SentinelPy is a lightweight, modular vulnerability scanner built in Python. It p
 .\.venv\Scripts\Activate
 ```
 
+```bash
+pip install -r requirements.txt --upgrade
+```
+
 ## Usage Examples
 
 ```bash
