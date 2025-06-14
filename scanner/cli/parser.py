@@ -1,6 +1,6 @@
 import argparse
 import re
-from typing import Tuple
+from typing import List, Optional, Tuple
 
 
 class CLIValidationError(Exception):
@@ -103,36 +103,40 @@ def is_utility_only(args: argparse.Namespace, remaining: list) -> bool:
     return (args.clean_exports or args.list_exports) and not remaining
 
 
-def parse_args():
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     """
-    Parse command-line arguments using argparse.
-    Handles both scan parameters and utility flags like --clean-exports.
+    Parse command-line arguments.
+
+    Args:
+        argv: List of simulated arguments for testing. If None,
+              the function reads sys.argv[1:].
 
     Returns:
-        argparse.Namespace: Parsed CLI arguments.
+        argparse.Namespace containing validated options.
 
     Raises:
-        CLIValidationError: If any argument validation fails
+        CLIValidationError via parser.error if validation fails.
     """
-    # Phase 1 — Pre-parse utility flags that can be used independently
+    # Phase 1 — minimal parser for utility flags
     pre_parser = argparse.ArgumentParser(add_help=False)
     pre_parser.add_argument("--clean-exports", action="store_true")
     pre_parser.add_argument("--list-exports", action="store_true")
-    pre_args, remaining_args = pre_parser.parse_known_args()
 
-    # If the user only requests utility operations, return these flags
+    # parse_known_args accepts the provided list or sys.argv by default
+    pre_args, remaining_args = pre_parser.parse_known_args(argv)
+
     if is_utility_only(pre_args, remaining_args):
-        return pre_args
+        return pre_args  # nothing else to validate
 
-    # Phase 2 — Main parser with all expected arguments
+    # Phase 2 — main parser
     parser = argparse.ArgumentParser(description="Network port scanner")
 
-    # Required arguments group
+    # Required
     required = parser.add_argument_group("Required arguments")
     required.add_argument("host", help="Target host (IP address or domain name)")
     required.add_argument("ports", help="Port range (e.g., 20-80)")
 
-    # Scan options group
+    # Scan options
     scan_opts = parser.add_argument_group("Scan options")
     scan_opts.add_argument(
         "-t",
@@ -142,7 +146,7 @@ def parse_args():
         help="Timeout in seconds for each port scan (default: 0.5)",
     )
 
-    # Output options group
+    # Output options
     output_opts = parser.add_argument_group("Output options")
     output_opts.add_argument(
         "--json", metavar="FILENAME", help="Export scan results to a JSON file"
@@ -153,12 +157,10 @@ def parse_args():
         help="Print scan results as raw JSON to stdout",
     )
 
-    # Logging options group
+    # Logging options
     logging_opts = parser.add_argument_group("Logging options")
     logging_opts.add_argument(
-        "--logfile",
-        metavar="FILENAME",
-        help="Write logs to custom log file (default: logs/scanner.log)",
+        "--logfile", metavar="FILENAME", help="Write logs to custom log file"
     )
     logging_opts.add_argument(
         "--show-logs", action="store_true", help="Print logs to console after execution"
@@ -167,18 +169,18 @@ def parse_args():
         "--clear-logs", action="store_true", help="Clear log file before starting"
     )
 
-    # Utility operations group
+    # Utility options
     utility_opts = parser.add_argument_group("Utility operations")
     utility_opts.add_argument(
         "--clean-exports",
         action="store_true",
-        help="Remove all existing JSON exports before scanning",
+        help="Remove existing JSON exports before scanning",
     )
     utility_opts.add_argument(
-        "--list-exports", action="store_true", help="List all existing JSON exports"
+        "--list-exports", action="store_true", help="List existing JSON exports"
     )
 
-    # Display options group
+    # Display options
     display_opts = parser.add_argument_group("Display options")
     display_opts.add_argument(
         "--verbose",
@@ -186,8 +188,10 @@ def parse_args():
         help="Show all ports scanned, including closed ones",
     )
 
+    # Parse the remaining arguments
     args = parser.parse_args(remaining_args)
 
+    # --- Custom validations ----------------------------------------
     # Validate arguments in order of importance
     try:
         # First validate port range as it's most likely to be wrong
@@ -205,3 +209,4 @@ def parse_args():
         parser.error(str(e))
 
     return args
+
