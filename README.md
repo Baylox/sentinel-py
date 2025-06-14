@@ -5,6 +5,15 @@ SentinelPy is a lightweight, modular vulnerability scanner built in Python. It p
 ```
 
 ```bash
+python -m pip list ^| findstr /I "black isort flake8 pytest"
+isort .; black .
+```
+
+```bash
+py -3.12 -m venv .venv
+```
+
+```bash
 pip install -r requirements.txt --upgrade
 ```
 
@@ -80,7 +89,12 @@ flake8 scanner/ tests/ --select=F,E
 # Search only for "Failure" errors (F) or other
 flake8 scanner/ tests/ --select=F 
 ```
+## Tests
 
+```bash
+flake8 scanner tests
+pytest
+```
 ## Project Roadmap
 
 The [roadmap](./docs/ROADMAP.md) outlines upcoming features, milestones, and future improvements.
