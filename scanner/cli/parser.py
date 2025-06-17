@@ -209,4 +209,3 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         parser.error(str(e))
 
     return args
-
