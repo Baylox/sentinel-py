@@ -1,4 +1,4 @@
-from .core.scanner import PortScanner
+from .core.tcp import PortScanner
 from .exceptions import HostResolutionError, PortRangeError, PortScannerError
 
 
