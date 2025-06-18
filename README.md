@@ -1,5 +1,22 @@
 SentinelPy is a lightweight, modular vulnerability scanner built in Python. It performs local security checks such as port scanning, SSL certificate analysis, and HTTP header inspection. Designed for learning, auditing, and internal testing.
 
+```bash
+.\.venv\Scripts\Activate
+```
+
+```bash
+python -m pip list ^| findstr /I "black isort flake8 pytest"
+isort .; black .
+```
+
+```bash
+py -3.12 -m venv .venv
+```
+
+```bash
+pip install -r requirements.txt --upgrade
+```
+
 ## Usage Examples
 
 ```bash
@@ -54,6 +71,30 @@ python main.py localhost 20-25 --clear-logs --show-logs
 python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
 ```
 
+## Flake8
+
+Flake8 commands to check code quality and detect common errors:
+
+```bash
+# Full analysis with sorted results
+flake8 scanner/ tests/ --format=default | sort
+```
+
+```bash
+# Search for style errors (E) and failures (F) or other
+flake8 scanner/ tests/ --select=F,E
+```
+
+```bash
+# Search only for "Failure" errors (F) or other
+flake8 scanner/ tests/ --select=F 
+```
+## Tests
+
+```bash
+flake8 scanner tests
+pytest
+```
 ## Project Roadmap
 
 The [roadmap](./docs/ROADMAP.md) outlines upcoming features, milestones, and future improvements.
