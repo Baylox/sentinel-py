@@ -1,18 +1,19 @@
 import json
-import os
 import re
-from typing import Any
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+from typing import Any
 
 # Define export directory path
 EXPORT_DIR = Path(__file__).resolve().parent.parent / "exports"
+
 
 def safe_filename(name: str) -> str:
     """
     Sanitize the provided filename by replacing unsafe characters.
     """
-    return re.sub(r'[^a-zA-Z0-9_\-\.]', '_', name)
+    return re.sub(r"[^a-zA-Z0-9_\-\.]", "_", name)
+
 
 def export_to_json(data: Any, filename: str = None) -> None:
     """
@@ -32,11 +33,12 @@ def export_to_json(data: Any, filename: str = None) -> None:
     full_path = EXPORT_DIR / filename
 
     try:
-        with open(full_path, 'w', encoding='utf-8') as f:
+        with open(full_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
         print(f"\nResults exported to: {full_path}")
     except Exception as e:
         print(f"Error while exporting to JSON: {e}")
+
 
 def clean_exports() -> None:
     """
@@ -54,6 +56,7 @@ def clean_exports() -> None:
     else:
         print("No export directory found. Nothing to clean.")
 
+
 def list_exports() -> None:
     """
     List all existing JSON export files in the export directory.
@@ -61,9 +64,9 @@ def list_exports() -> None:
     """
     # Create the export directory if it doesn't exist
     EXPORT_DIR.mkdir(parents=True, exist_ok=True)
-    
+
     json_files = list(EXPORT_DIR.glob("*.json"))
-    
+
     if not json_files:
         print("No JSON exports found.")
         return
@@ -71,4 +74,3 @@ def list_exports() -> None:
     print("Existing exports:")
     for file in sorted(json_files, reverse=True):
         print(f"  - {file.name}")
-
