@@ -8,7 +8,7 @@ from ..models.ports import PortResult, PortScanResults
 from ..utils.validators import parse_port_range
 
 
-class PortScanner:
+class TCPScanner:
     """Main port scanner implementation."""
 
     def __init__(self, timeout: float = 0.5):
