@@ -38,13 +38,22 @@ class HTTPScanner:
                     "content_type": response.headers.get("Content-Type", "Unknown"),
                     "url": url
                 })
+            except requests.exceptions.ConnectTimeout:
+                results.append({
+                    "port": port,
+                    "status": "closed",
+                    "error": "Connection timed out",
+                    "url": url
+                })
             except Exception as e:
                 results.append({
                     "port": port,
                     "status": "closed",
-                    "error": str(e),
+                    "error": e.__class__.__name__,
+                    "reason": str(e),
                     "url": url
                 })
+
 
         return {
             "open_ports": open_ports,
