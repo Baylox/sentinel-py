@@ -2,13 +2,13 @@ import argparse
 import logging
 import sys
 
-from scanner import PortScannerError, scan_ports
+from scanner import PortScannerError
 from scanner.cli.display import display_results, handle_output
 from scanner.cli.handlers import handle_utility_operations
 from scanner.cli.parser import CLIValidationError, parse_args
 from scanner.logging import SUCCESS, log_with_context, setup_logger
+from scanner.modules import run_selected_modules
 from scanner.utils.logging_tools import clear_logs, show_logs
-
 
 def run_cli():
     """
@@ -28,7 +28,7 @@ def run_cli():
         if handle_utility_ops(args, logger):
             return 0
 
-        results = perform_scan(args, logger)
+        results = run_selected_modules(args, logger)
         handle_output_and_display(results, args, logger)
 
         return 0
@@ -39,7 +39,6 @@ def run_cli():
 # ─────────────────────────────────────────────
 # Utility Functions (Logic Decoupling)
 # ─────────────────────────────────────────────
-
 
 def handle_clear_logs_flag():
     """
@@ -55,7 +54,6 @@ def handle_clear_logs_flag():
         return True
     return False
 
-
 def handle_utility_ops(args, logger):
     """
     Execute utility options like --list-exports or --show-logs early.
@@ -70,28 +68,6 @@ def handle_utility_ops(args, logger):
         return True
     return False
 
-
-def perform_scan(args, logger):
-    """
-    Run the actual port scan.
-    """
-    start_port, end_port = args.ports
-    ports_range = f"{start_port}-{end_port}"
-
-    log_with_context(
-        logger,
-        logging.INFO,
-        "Scanning %s on ports %s...",
-        args.host,
-        ports_range,
-        context="SCAN",
-    )
-    results = scan_ports(args.host, ports_range, timeout=args.timeout)
-    log_with_context(logger, logging.DEBUG, "Scan completed", context="SCAN")
-
-    return results
-
-
 def handle_output_and_display(results, args, logger):
     """
     Show results and handle JSON export or log display.
@@ -103,7 +79,6 @@ def handle_output_and_display(results, args, logger):
     if getattr(args, "show_logs", False):
         print("\nLog contents:")
         print(show_logs(args.logfile if hasattr(args, "logfile") else None))
-
 
 def handle_cli_error(e, logger):
     error_map = [
@@ -138,3 +113,5 @@ def handle_cli_error(e, logger):
         )
 
     return 1
+
+
