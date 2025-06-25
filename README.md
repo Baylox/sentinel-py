@@ -51,6 +51,11 @@ python main.py --clean-exports
 ```bash
 python main.py --list-exports
 ```
+
+```bash
+python main.py localhost 70-80 --modules http
+```
+
 ### Tests and Logs
 ```bash
 # Basic scan test
