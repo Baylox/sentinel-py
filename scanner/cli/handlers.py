@@ -1,5 +1,6 @@
 from scanner.utils.logging_tools import clear_logs, show_logs
 
+
 def handle_utility_operations(args):
     """
     Handle utility operations such as log display or cleanup.
@@ -21,4 +22,3 @@ def handle_utility_operations(args):
         return True
 
     return False
-

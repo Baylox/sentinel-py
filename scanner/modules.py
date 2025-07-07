@@ -1,11 +1,13 @@
-from scanner.core.tcp import TCPScanner
-from scanner.core.http import HTTPScanner  
 from typing import Dict
+
+from scanner.core.http import HTTPScanner
+from scanner.core.tcp import TCPScanner
+
 
 def run_selected_modules(args, logger) -> Dict[str, list]:
     results = {}
 
-    start_port, end_port = args.ports 
+    start_port, end_port = args.ports
     port_range_str = f"{start_port}-{end_port}"
 
     if not hasattr(args, "modules") or not args.modules:
@@ -22,4 +24,3 @@ def run_selected_modules(args, logger) -> Dict[str, list]:
         results["http"] = http.scan(args.host, list(range(start_port, end_port + 1)))
 
     return results
-

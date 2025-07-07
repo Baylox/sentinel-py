@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 class CLIValidationError(Exception):
     """Custom exception for CLI validation errors."""
+
     pass
 
 
@@ -22,7 +23,9 @@ def validate_port_range(ports: str) -> Tuple[int, int]:
         CLIValidationError: If the port range is invalid.
     """
     if not re.match(r"^\d+-\d+$", ports):
-        raise CLIValidationError("Port range must be in format 'start-end' (e.g., '20-80')")
+        raise CLIValidationError(
+            "Port range must be in format 'start-end' (e.g., '20-80')"
+        )
 
     start, end = map(int, ports.split("-"))
     if not (1 <= start <= 65535 and 1 <= end <= 65535):
@@ -51,12 +54,16 @@ def validate_host(host: str) -> str:
     if re.match(ip_pattern, host):
         octets = host.split(".")
         if not all(0 <= int(octet) <= 255 for octet in octets):
-            raise CLIValidationError("Invalid IP address: octets must be between 0 and 255")
+            raise CLIValidationError(
+                "Invalid IP address: octets must be between 0 and 255"
+            )
         return host
 
     domain_pattern = r"^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z]{2,})*$"
     if not re.match(domain_pattern, host):
-        raise CLIValidationError("Invalid host: must be a valid IP address or domain name")
+        raise CLIValidationError(
+            "Invalid host: must be a valid IP address or domain name"
+        )
 
     return host
 
@@ -135,29 +142,46 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     # Scan options
     scan_opts = parser.add_argument_group("Scan options")
     scan_opts.add_argument(
-        "-t", "--timeout", type=float, default=0.5,
-        help="Timeout per scan request (default: 0.5s)"
+        "-t",
+        "--timeout",
+        type=float,
+        default=0.5,
+        help="Timeout per scan request (default: 0.5s)",
     )
 
     # Output options
     output_opts = parser.add_argument_group("Output options")
-    output_opts.add_argument("--json", metavar="FILENAME", help="Export results to JSON file")
-    output_opts.add_argument("--print-json", action="store_true", help="Print results in JSON format")
+    output_opts.add_argument(
+        "--json", metavar="FILENAME", help="Export results to JSON file"
+    )
+    output_opts.add_argument(
+        "--print-json", action="store_true", help="Print results in JSON format"
+    )
 
     # Logging options
     log_opts = parser.add_argument_group("Logging options")
     log_opts.add_argument("--logfile", metavar="FILENAME", help="Log to a custom file")
-    log_opts.add_argument("--show-logs", action="store_true", help="Show logs after execution")
-    log_opts.add_argument("--clear-logs", action="store_true", help="Clear logs before running")
+    log_opts.add_argument(
+        "--show-logs", action="store_true", help="Show logs after execution"
+    )
+    log_opts.add_argument(
+        "--clear-logs", action="store_true", help="Clear logs before running"
+    )
 
     # Utility options
     utility_opts = parser.add_argument_group("Utility operations")
-    utility_opts.add_argument("--clean-exports", action="store_true", help="Delete previous JSON exports")
-    utility_opts.add_argument("--list-exports", action="store_true", help="List saved JSON exports")
+    utility_opts.add_argument(
+        "--clean-exports", action="store_true", help="Delete previous JSON exports"
+    )
+    utility_opts.add_argument(
+        "--list-exports", action="store_true", help="List saved JSON exports"
+    )
 
     # Display options
     display_opts = parser.add_argument_group("Display options")
-    display_opts.add_argument("--verbose", action="store_true", help="Show closed ports too")
+    display_opts.add_argument(
+        "--verbose", action="store_true", help="Show closed ports too"
+    )
 
     # Parse and validate
     args = parser.parse_args(remaining_args)

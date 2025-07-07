@@ -1,6 +1,8 @@
+from typing import Any, Dict, List
+
 import requests
-from typing import List, Dict, Any
 from tqdm import tqdm
+
 
 class HTTPScanner:
     def __init__(self, timeout: float = 3.0):
@@ -60,28 +62,29 @@ class HTTPScanner:
                     open_ports.append(port)
 
                 # Collect scan result for current port
-                results.append({
-                    "port": port,
-                    "status": "open" if resp.ok else "closed",
-                    "status_code": resp.status_code,
-                    "server": server_type,
-                    "content_type": resp.headers.get("Content-Type", "Unknown"),
-                    "url": url
-                })
+                results.append(
+                    {
+                        "port": port,
+                        "status": "open" if resp.ok else "closed",
+                        "status_code": resp.status_code,
+                        "server": server_type,
+                        "content_type": resp.headers.get("Content-Type", "Unknown"),
+                        "url": url,
+                    }
+                )
 
             except Exception as e:
                 # If error occurs (timeout, connection refused, etc.)
-                results.append({
-                    "port": port,
-                    "status": "closed",
-                    "server": "N/A",
-                    "error": str(e).split(" (")[0],  # Only show the root error message
-                    "url": url
-                })
+                results.append(
+                    {
+                        "port": port,
+                        "status": "closed",
+                        "server": "N/A",
+                        "error": str(e).split(" (")[
+                            0
+                        ],  # Only show the root error message
+                        "url": url,
+                    }
+                )
 
-        return {
-            "open_ports": open_ports,
-            "scan_results": results
-        }
-
-
+        return {"open_ports": open_ports, "scan_results": results}

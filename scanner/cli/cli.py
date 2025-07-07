@@ -10,6 +10,7 @@ from scanner.logging import SUCCESS, log_with_context, setup_logger
 from scanner.modules import run_selected_modules
 from scanner.utils.logging_tools import clear_logs, show_logs
 
+
 def run_cli():
     """
     Entry point for the command-line interface.
@@ -40,6 +41,7 @@ def run_cli():
 # Utility Functions (Logic Decoupling)
 # ─────────────────────────────────────────────
 
+
 def handle_clear_logs_flag():
     """
     Check if --clear-logs was passed, and handle it before parsing other args.
@@ -53,6 +55,7 @@ def handle_clear_logs_flag():
         print("Logs deleted.")
         return True
     return False
+
 
 def handle_utility_ops(args, logger):
     """
@@ -68,6 +71,7 @@ def handle_utility_ops(args, logger):
         return True
     return False
 
+
 def handle_output_and_display(results, args, logger):
     """
     Show results and handle JSON export or log display.
@@ -79,6 +83,7 @@ def handle_output_and_display(results, args, logger):
     if getattr(args, "show_logs", False):
         print("\nLog contents:")
         print(show_logs(args.logfile if hasattr(args, "logfile") else None))
+
 
 def handle_cli_error(e, logger):
     error_map = [
@@ -113,5 +118,3 @@ def handle_cli_error(e, logger):
         )
 
     return 1
-
-
