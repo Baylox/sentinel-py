@@ -1,6 +1,7 @@
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from scanner.core.http import HTTPScanner
+
 
 @patch("scanner.core.http.requests.get")
 def test_http_scanner_success(mock_get):
@@ -18,8 +19,9 @@ def test_http_scanner_success(mock_get):
     assert result["open_ports"] == [8080]
     assert len(result["scan_results"]) == 1
     assert result["scan_results"][0]["status_code"] == 200
-    assert result["scan_results"][0]["server"] == "Mockserver"  
+    assert result["scan_results"][0]["server"] == "Mockserver"
     assert result["scan_results"][0]["url"] == "http://testserver.com:8080/"
+
 
 @patch("scanner.core.http.requests.get")
 def test_http_scanner_error(mock_get):
@@ -33,5 +35,3 @@ def test_http_scanner_error(mock_get):
     assert len(result["scan_results"]) == 1
     assert "error" in result["scan_results"][0]
     assert result["scan_results"][0]["url"] == "http://badhost:1234/"
-
-

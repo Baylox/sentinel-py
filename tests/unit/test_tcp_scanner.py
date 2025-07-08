@@ -17,7 +17,7 @@ def test_scan_ports_open(mock_socket_class):
     assert result["scan_results"][0]["port"] == 80
 
 
-@patch("scanner.core.tcp.socket.socket") 
+@patch("scanner.core.tcp.socket.socket")
 def test_scan_ports_closed(mock_socket_class):
     mock_socket = MagicMock()
     mock_socket.connect_ex.return_value = 1

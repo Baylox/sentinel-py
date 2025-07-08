@@ -1,10 +1,12 @@
 import pytest
+
 from scanner.cli.parser import (
-    validate_port_range,
-    validate_host,
-    validate_timeout,
     CLIValidationError,
+    validate_host,
+    validate_port_range,
+    validate_timeout,
 )
+
 
 @pytest.mark.parametrize(
     "ports,expected", [("22-22", (22, 22)), ("1-65535", (1, 65535))]
