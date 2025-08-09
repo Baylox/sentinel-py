@@ -77,6 +77,10 @@ python main.py localhost 20-25 --clear-logs --show-logs
 python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
 ```
 
+```bash
+pip install --upgrade certifi
+```
+
 ## Flake8
 
 Flake8 commands to check code quality and detect common errors:
