@@ -148,6 +148,17 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         default=0.5,
         help="Timeout per scan request (default: 0.5s)",
     )
+    scan_opts.add_argument(
+        "--ssl-port",
+        type=int,
+        default=443,
+        help="Port for SSL/TLS (default: 443)"
+    )
+    scan_opts.add_argument(
+        "--no-verify",
+        action="store_true",
+        help="Disable SSL certificate verification"
+    )
 
     # Output options
     output_opts = parser.add_argument_group("Output options")
