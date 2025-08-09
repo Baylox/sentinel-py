@@ -51,6 +51,12 @@ python main.py --clean-exports
 ```bash
 python main.py --list-exports
 ```
+
+### For an HTTP scan
+```bash
+python main.py localhost 70-80 --modules http
+```
+
 ### Tests and Logs
 ```bash
 # Basic scan test
@@ -69,6 +75,10 @@ python main.py localhost 20-25 --clear-logs --show-logs
 ```bash
 # Full scan test with all logging options
 python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
+```
+
+```bash
+pip install --upgrade certifi
 ```
 
 ## Flake8

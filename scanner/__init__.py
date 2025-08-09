@@ -1,4 +1,4 @@
-from .core.scanner import PortScanner
+from .core.tcp import TCPScanner
 from .exceptions import HostResolutionError, PortRangeError, PortScannerError
 
 
@@ -16,13 +16,13 @@ def scan_ports(host: str, ports_range: str, timeout: float = 0.5) -> dict:
             - 'open_ports': List of open port numbers
             - 'scan_results': List of dictionaries with detailed port information
     """
-    scanner = PortScanner(timeout=timeout)
+    scanner = TCPScanner(timeout=timeout)
     return scanner.scan(host, ports_range)
 
 
 __all__ = [
     "scan_ports",
-    "PortScanner",
+    "TCPScanner",
     "PortScannerError",
     "PortRangeError",
     "HostResolutionError",
