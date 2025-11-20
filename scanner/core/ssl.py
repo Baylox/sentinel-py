@@ -1,10 +1,15 @@
-import socket, ssl
+import socket
+import ssl
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-class SSLScanner:
+from ..models.results import SSLScanResult
+from .base import BaseScanner
+
+
+class SSLScanner(BaseScanner):
     def __init__(self, timeout=5.0, verify=True):
-        self.timeout = timeout
+        super().__init__(timeout)
         self.verify = verify
 
     def _parse_dt(self, s):
@@ -12,7 +17,10 @@ class SSLScanner:
             return None
         for fix in (lambda x: x, lambda x: x.replace("  ", " ")):
             try:
-                return datetime.strptime(fix(s), "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+                dt = datetime.strptime(fix(s), "%b %d %H:%M:%S %Y %Z").replace(
+                    tzinfo=timezone.utc
+                )
+                return dt
             except Exception:
                 pass
         return None
@@ -36,7 +44,9 @@ class SSLScanner:
                     cert = ssock.getpeercert()
 
             if not cert:
-                return {"ok": False, "error": "Aucun certificat présenté"}
+                return SSLScanResult(
+                    ok=False, error="No certificate presented"
+                ).to_dict()
 
             subj = self._flatten(cert.get("subject", ()))
             issu = self._flatten(cert.get("issuer", ()))
@@ -44,16 +54,17 @@ class SSLScanner:
             na = self._parse_dt(cert.get("notAfter"))
             days_left = (na - datetime.now(timezone.utc)).days if na else None
 
-            return {
-                "ok": True,
-                "issued_to": subj.get("commonName"),
-                "issued_by": issu.get("commonName"),
-                "valid_from": nb.isoformat() if nb else None,
-                "valid_until": na.isoformat() if na else None,
-                "days_left": days_left,
-                "expired": (days_left is not None and days_left < 0),
-            }
+            return SSLScanResult(
+                ok=True,
+                issued_to=subj.get("commonName"),
+                issued_by=issu.get("commonName"),
+                valid_from=nb.isoformat() if nb else None,
+                valid_until=na.isoformat() if na else None,
+                days_left=days_left,
+                expired=(days_left is not None and days_left < 0),
+            ).to_dict()
+
         except ssl.SSLError as e:
-            return {"ok": False, "error": f"SSL error: {e}"}
+            return SSLScanResult(ok=False, error=f"SSL error: {e}").to_dict()
         except OSError as e:
-            return {"ok": False, "error": f"Socket error: {e}"}
+            return SSLScanResult(ok=False, error=f"Socket error: {e}").to_dict()

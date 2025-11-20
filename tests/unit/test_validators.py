@@ -1,24 +1,22 @@
 import pytest
 
-from scanner.cli.parser import (
-    CLIValidationError,
-    validate_host,
-    validate_port_range,
-    validate_timeout,
-)
+from scanner.cli.parser import CLIValidationError, validate_host, validate_timeout
+from scanner.exceptions import PortRangeError
+from scanner.utils.validators import parse_port_range
 
 
 @pytest.mark.parametrize(
     "ports,expected", [("22-22", (22, 22)), ("1-65535", (1, 65535))]
 )
 def test_validate_port_range_ok(ports, expected):
-    assert validate_port_range(ports) == expected
+    assert parse_port_range(ports) == expected
 
 
 @pytest.mark.parametrize("ports", ["0-1", "22-21", "abc", "70000-80000"])
 def test_validate_port_range_error(ports):
-    with pytest.raises(CLIValidationError):
-        validate_port_range(ports)
+    with pytest.raises(PortRangeError):
+        parse_port_range(ports)
+
 
 
 @pytest.mark.parametrize("host", ["127.0.0.1", "localhost", "example.com"])

@@ -3,11 +3,14 @@ from typing import Any, Dict, List
 import requests
 from tqdm import tqdm
 
+from ..models.results import HTTPScanResult
+from .base import BaseScanner
 
-class HTTPScanner:
+
+class HTTPScanner(BaseScanner):
     def __init__(self, timeout: float = 3.0):
         # Set the timeout for HTTP requests
-        self.timeout = timeout
+        super().__init__(timeout)
 
     def _identify_web_server(self, server_header: str) -> str:
         """
@@ -87,4 +90,7 @@ class HTTPScanner:
                     }
                 )
 
-        return {"open_ports": open_ports, "scan_results": results}
+        # Create HTTPScanResult
+        http_result = HTTPScanResult(open_ports=open_ports, scan_results=results)
+
+        return http_result.to_dict()

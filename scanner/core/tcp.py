@@ -5,10 +5,12 @@ from tqdm import tqdm
 
 from ..exceptions import HostResolutionError
 from ..models.ports import PortResult, PortScanResults
+from ..models.results import TCPScanResult
 from ..utils.validators import parse_port_range
+from .base import BaseScanner
 
 
-class TCPScanner:
+class TCPScanner(BaseScanner):
     """Main port scanner implementation."""
 
     def __init__(self, timeout: float = 0.5):
@@ -18,7 +20,7 @@ class TCPScanner:
         Args:
             timeout (float): Default timeout for port connections in seconds.
         """
-        self.timeout = timeout
+        super().__init__(timeout)
 
     def _check_host_resolution(self, host: str) -> None:
         """
@@ -100,4 +102,10 @@ class TCPScanner:
             result = self._scan_single_port(host, port)
             results.add_result(result)
 
-        return results.to_dict()
+        # Create TCPScanResult
+        tcp_result = TCPScanResult(
+            open_ports=results.open_ports,
+            scan_results=[vars(r) for r in results.scan_results],
+        )
+
+        return tcp_result.to_dict()
