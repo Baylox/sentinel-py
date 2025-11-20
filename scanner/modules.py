@@ -1,8 +1,8 @@
 from typing import Dict
 
 from scanner.core.http import HTTPScanner
-from scanner.core.tcp import TCPScanner
 from scanner.core.ssl import SSLScanner
+from scanner.core.tcp import TCPScanner
 
 
 def run_selected_modules(args, logger) -> Dict[str, list]:
@@ -29,4 +29,3 @@ def run_selected_modules(args, logger) -> Dict[str, list]:
         results["ssl"] = ssl_scanner.scan(args.host, getattr(args, "ssl_port", 443))
 
     return results
-

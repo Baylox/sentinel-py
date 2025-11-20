@@ -3,11 +3,11 @@ from typing import Dict
 
 from tqdm import tqdm
 
-from .base import BaseScanner
 from ..exceptions import HostResolutionError
 from ..models.ports import PortResult, PortScanResults
 from ..models.results import TCPScanResult
 from ..utils.validators import parse_port_range
+from .base import BaseScanner
 
 
 class TCPScanner(BaseScanner):
@@ -105,8 +105,7 @@ class TCPScanner(BaseScanner):
         # Create TCPScanResult
         tcp_result = TCPScanResult(
             open_ports=results.open_ports,
-            scan_results=[vars(r) for r in results.scan_results]
+            scan_results=[vars(r) for r in results.scan_results],
         )
-        
-        return tcp_result.to_dict()
 
+        return tcp_result.to_dict()

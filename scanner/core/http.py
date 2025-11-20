@@ -3,8 +3,8 @@ from typing import Any, Dict, List
 import requests
 from tqdm import tqdm
 
-from .base import BaseScanner
 from ..models.results import HTTPScanResult
+from .base import BaseScanner
 
 
 class HTTPScanner(BaseScanner):
@@ -91,10 +91,6 @@ class HTTPScanner(BaseScanner):
                 )
 
         # Create HTTPScanResult
-        http_result = HTTPScanResult(
-            open_ports=open_ports,
-            scan_results=results
-        )
-        
-        return http_result.to_dict()
+        http_result = HTTPScanResult(open_ports=open_ports, scan_results=results)
 
+        return http_result.to_dict()

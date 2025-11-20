@@ -3,8 +3,8 @@ import ssl
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from .base import BaseScanner
 from ..models.results import SSLScanResult
+from .base import BaseScanner
 
 
 class SSLScanner(BaseScanner):
@@ -17,9 +17,9 @@ class SSLScanner(BaseScanner):
             return None
         for fix in (lambda x: x, lambda x: x.replace("  ", " ")):
             try:
-                dt = datetime.strptime(
-                    fix(s), "%b %d %H:%M:%S %Y %Z"
-                ).replace(tzinfo=timezone.utc)
+                dt = datetime.strptime(fix(s), "%b %d %H:%M:%S %Y %Z").replace(
+                    tzinfo=timezone.utc
+                )
                 return dt
             except Exception:
                 pass
@@ -45,8 +45,7 @@ class SSLScanner(BaseScanner):
 
             if not cert:
                 return SSLScanResult(
-                    ok=False,
-                    error="No certificate presented"
+                    ok=False, error="No certificate presented"
                 ).to_dict()
 
             subj = self._flatten(cert.get("subject", ()))
@@ -62,18 +61,10 @@ class SSLScanner(BaseScanner):
                 valid_from=nb.isoformat() if nb else None,
                 valid_until=na.isoformat() if na else None,
                 days_left=days_left,
-                expired=(days_left is not None and days_left < 0)
+                expired=(days_left is not None and days_left < 0),
             ).to_dict()
-            
+
         except ssl.SSLError as e:
-            return SSLScanResult(
-                ok=False,
-                error=f"SSL error: {e}"
-            ).to_dict()
+            return SSLScanResult(ok=False, error=f"SSL error: {e}").to_dict()
         except OSError as e:
-            return SSLScanResult(
-                ok=False,
-                error=f"Socket error: {e}"
-            ).to_dict()
-
-
+            return SSLScanResult(ok=False, error=f"Socket error: {e}").to_dict()

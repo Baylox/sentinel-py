@@ -14,4 +14,3 @@ class HostResolutionError(PortScannerError):
     """Raised when the target host cannot be resolved."""
 
     pass
-

@@ -123,15 +123,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Timeout per scan request (default: 0.5s)",
     )
     scan_opts.add_argument(
-        "--ssl-port",
-        type=int,
-        default=443,
-        help="Port for SSL/TLS (default: 443)"
+        "--ssl-port", type=int, default=443, help="Port for SSL/TLS (default: 443)"
     )
     scan_opts.add_argument(
-        "--no-verify",
-        action="store_true",
-        help="Disable SSL certificate verification"
+        "--no-verify", action="store_true", help="Disable SSL certificate verification"
     )
 
     # Output options
@@ -174,7 +169,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     try:
         # Import here to avoid circular dependency
         from ..utils.validators import parse_port_range
-        
+
         args.ports = parse_port_range(args.ports)
         args.timeout = validate_timeout(args.timeout)
         args.host = validate_host(args.host)
@@ -185,4 +180,3 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         parser.error(str(e))
 
     return args
-
