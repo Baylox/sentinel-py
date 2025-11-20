@@ -1,110 +1,109 @@
+# SentinelPy
+
 SentinelPy is a lightweight, modular vulnerability scanner built in Python. It performs local security checks such as port scanning, SSL certificate analysis, and HTTP header inspection. Designed for learning, auditing, and internal testing.
 
+## Installation
+
+### From PyPI (Coming Soon)
+
 ```bash
+pip install sentinelpy
+```
+
+### From Source
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Baylox/sentinel-py.git
+   cd sentinel-py
+   ```
+
+2. Install in editable mode with dev dependencies:
+
+   ```bash
+   pip install -e ".[dev]"
+   ```
+
+   Or without dev tools:
+
+   ```bash
+   pip install -e .
+   ```
+
+## Usage
+
+### Basic Scan
+
+```bash
+sentinelpy example.com 20-80
+```
+
+### Multi-Module Scan
+
+```bash
+sentinelpy example.com 20-443 --modules tcp http ssl
+```
+
+### SSL Certificate Check
+
+```bash
+sentinelpy google.com 443-443 --modules ssl
+```
+
+### Export Results
+
+```bash
+sentinelpy example.com 20-80 --json results.json
+```
+
+### Legacy Usage (Direct Python)
+
+```bash
+python main.py example.com 20-80
+```
+
+For all options:
+
+```bash
+sentinelpy --help
+```
+
+## Development
+
+### Setup Development Environment
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Windows)
 .\.venv\Scripts\Activate
+
+# Activate (Linux/Mac)
+source .venv/bin/activate
+
+# Install with dev dependencies
+pip install -e ".[dev]"
 ```
 
-```bash
-python -m pip list ^| findstr /I "black isort flake8 pytest"
-isort .; black .
-```
+### Code Quality
 
 ```bash
-py -3.12 -m venv .venv
-```
+# Format code
+black scanner/ tests/
+isort scanner/ tests/
 
-```bash
-pip install -r requirements.txt --upgrade
-```
+# Lint
+flake8 scanner/ tests/
 
-## Usage Examples
-
-```bash
-python main.py example.com 20-25
-```
-
-```bash
-python main.py example.com 20-25 --print-json
-```
-
-### Automatic export 
-```bash
-python main.py localhost 70-80
-```
-
-```bash
-python main.py localhost 22-80 --json test_output
-```
-
-```bash
-python main.py localhost 22-80 --print-json
-```
-
-```bash
-python main.py localhost 22-80 --json test_output --print-json
-```
-
-```bash
-python main.py --clean-exports
-```
-
-```bash
-python main.py --list-exports
-```
-
-### For an HTTP scan
-```bash
-python main.py localhost 70-80 --modules http
-```
-
-### Tests and Logs
-```bash
-# Basic scan test
-python main.py localhost 20-25
-```
-```bash
-# Scan with custom log file
-python main.py localhost 20-25 --logfile test.log
-```
-
-```bash
-# Scan with log cleanup and log display
-python main.py localhost 20-25 --clear-logs --show-logs
-```
-
-```bash
-# Full scan test with all logging options
-python main.py localhost 20-25 --logfile test.log --clear-logs --show-logs
-```
-
-```bash
-pip install --upgrade certifi
-```
-
-## Flake8
-
-Flake8 commands to check code quality and detect common errors:
-
-```bash
-# Full analysis with sorted results
-flake8 scanner/ tests/ --format=default | sort
-```
-
-```bash
-# Search for style errors (E) and failures (F) or other
-flake8 scanner/ tests/ --select=F,E
-```
-
-```bash
-# Search only for "Failure" errors (F) or other
-flake8 scanner/ tests/ --select=F 
-```
-## Tests
-
-```bash
-flake8 scanner tests
+# Run tests
 pytest
+
+# With coverage
+pytest --cov=scanner --cov-report=html
 ```
+
 ## Project Roadmap
 
 The [roadmap](./docs/ROADMAP.md) outlines upcoming features, milestones, and future improvements.
@@ -118,7 +117,6 @@ You are solely responsible for using it **ethically and legally**.
 Do **not** use it against systems that you do not own or do not have explicit permission to test.
 
 Even though this project is under the MIT License, the author assumes **no responsibility** for any misuse or illegal application of the code.
-
 
 <p align="center">
   <img src="https://img.shields.io/badge/Usage-Ethical%20Hacking%20Only-yellow?style=flat-square" />
