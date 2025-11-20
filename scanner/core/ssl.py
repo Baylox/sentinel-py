@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict
 
 from .base import BaseScanner
+from ..exceptions import CertificateNotFoundError, SSLConnectionError
 from ..models.results import SSLScanResult
 
 
@@ -33,6 +34,20 @@ class SSLScanner(BaseScanner):
         return out
 
     def scan(self, host: str, port: int = 443) -> Dict[str, Any]:
+        """
+        Scan SSL/TLS certificate on a given host and port.
+        
+        Args:
+            host: Target host to scan
+            port: Target port (default: 443)
+            
+        Returns:
+            Dict containing certificate information
+            
+        Raises:
+            CertificateNotFoundError: When no certificate is presented
+            SSLConnectionError: When SSL/TLS connection or handshake fails
+        """
         ctx = ssl.create_default_context()
         if not self.verify:
             ctx.check_hostname = False
@@ -44,10 +59,9 @@ class SSLScanner(BaseScanner):
                     cert = ssock.getpeercert()
 
             if not cert:
-                return SSLScanResult(
-                    ok=False,
-                    error="Aucun certificat présenté"
-                ).to_dict()
+                raise CertificateNotFoundError(
+                    f"No certificate presented by {host}:{port}"
+                )
 
             subj = self._flatten(cert.get("subject", ()))
             issu = self._flatten(cert.get("issuer", ()))
@@ -66,13 +80,12 @@ class SSLScanner(BaseScanner):
             ).to_dict()
             
         except ssl.SSLError as e:
-            return SSLScanResult(
-                ok=False,
-                error=f"SSL error: {e}"
-            ).to_dict()
+            raise SSLConnectionError(
+                f"SSL/TLS handshake failed for {host}:{port}: {e}"
+            ) from e
         except OSError as e:
-            return SSLScanResult(
-                ok=False,
-                error=f"Socket error: {e}"
-            ).to_dict()
+            raise SSLConnectionError(
+                f"Connection failed to {host}:{port}: {e}"
+            ) from e
+
 
