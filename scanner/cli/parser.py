@@ -1,40 +1,14 @@
 import argparse
 import re
-from typing import List, Optional, Tuple
+from typing import List, Optional
+
+from ..exceptions import PortRangeError
 
 
 class CLIValidationError(Exception):
     """Custom exception for CLI validation errors."""
 
     pass
-
-
-def validate_port_range(ports: str) -> Tuple[int, int]:
-    """
-    Validate and parse port range in the format 'start-end'.
-
-    Args:
-        ports: Port range string (e.g., "20-80")
-
-    Returns:
-        A tuple of start and end ports.
-
-    Raises:
-        CLIValidationError: If the port range is invalid.
-    """
-    if not re.match(r"^\d+-\d+$", ports):
-        raise CLIValidationError(
-            "Port range must be in format 'start-end' (e.g., '20-80')"
-        )
-
-    start, end = map(int, ports.split("-"))
-    if not (1 <= start <= 65535 and 1 <= end <= 65535):
-        raise CLIValidationError("Ports must be between 1 and 65535")
-
-    if start > end:
-        raise CLIValidationError("Start port must be less than or equal to end port")
-
-    return start, end
 
 
 def validate_host(host: str) -> str:
@@ -198,10 +172,17 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     args = parser.parse_args(remaining_args)
 
     try:
-        args.ports = validate_port_range(args.ports)
+        # Import here to avoid circular dependency
+        from ..utils.validators import parse_port_range
+        
+        args.ports = parse_port_range(args.ports)
         args.timeout = validate_timeout(args.timeout)
         args.host = validate_host(args.host)
+    except PortRangeError as e:
+        # Wrap PortRangeError as parser error
+        parser.error(str(e))
     except CLIValidationError as e:
         parser.error(str(e))
 
     return args
+
