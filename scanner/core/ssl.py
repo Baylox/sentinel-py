@@ -1,10 +1,14 @@
-import socket, ssl
+import socket
+import ssl
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-class SSLScanner:
+from .base import BaseScanner
+
+
+class SSLScanner(BaseScanner):
     def __init__(self, timeout=5.0, verify=True):
-        self.timeout = timeout
+        super().__init__(timeout)
         self.verify = verify
 
     def _parse_dt(self, s):
@@ -12,7 +16,10 @@ class SSLScanner:
             return None
         for fix in (lambda x: x, lambda x: x.replace("  ", " ")):
             try:
-                return datetime.strptime(fix(s), "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+                dt = datetime.strptime(
+                    fix(s), "%b %d %H:%M:%S %Y %Z"
+                ).replace(tzinfo=timezone.utc)
+                return dt
             except Exception:
                 pass
         return None

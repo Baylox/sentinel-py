@@ -3,12 +3,13 @@ from typing import Dict
 
 from tqdm import tqdm
 
+from .base import BaseScanner
 from ..exceptions import HostResolutionError
 from ..models.ports import PortResult, PortScanResults
 from ..utils.validators import parse_port_range
 
 
-class TCPScanner:
+class TCPScanner(BaseScanner):
     """Main port scanner implementation."""
 
     def __init__(self, timeout: float = 0.5):
@@ -18,7 +19,7 @@ class TCPScanner:
         Args:
             timeout (float): Default timeout for port connections in seconds.
         """
-        self.timeout = timeout
+        super().__init__(timeout)
 
     def _check_host_resolution(self, host: str) -> None:
         """
