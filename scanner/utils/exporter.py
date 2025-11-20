@@ -40,6 +40,20 @@ def export_to_json(data: Any, filename: str = None) -> None:
         print(f"Error while exporting to JSON: {e}")
 
 
+def load_json(filepath: str) -> Any:
+    """
+    Load data from a JSON file.
+
+    Args:
+        filepath: Path to the JSON file to load
+
+    Returns:
+        Loaded data from JSON file
+    """
+    with open(filepath, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def clean_exports() -> None:
     """
     Delete all JSON files inside the export directory.

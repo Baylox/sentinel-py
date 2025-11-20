@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Baylox", email = "your.email@example.com"}
+    {name = "Baylox", email = "Baylox@users.noreply.github.com"}
 ]
 keywords = ["security", "scanner", "network", "port-scanner", "ssl", "vulnerability"]
 classifiers = [
