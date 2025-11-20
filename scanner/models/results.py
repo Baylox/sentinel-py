@@ -49,24 +49,6 @@ class SSLScanResult:
     error: Optional[str] = None
     
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert to dictionary format for JSON serialization.
-        
-        Returns the SSL-specific fields, excluding None values for cleaner output.
-        """
-        result = {"ok": self.ok}
-        
-        if self.ok:
-            result.update({
-                "issued_to": self.issued_to,
-                "issued_by": self.issued_by,
-                "valid_from": self.valid_from,
-                "valid_until": self.valid_until,
-                "days_left": self.days_left,
-                "expired": self.expired,
-            })
-        else:
-            result["error"] = self.error
-        
-        return result
+        """Convert to dictionary format for JSON serialization."""
+        return asdict(self)
 
