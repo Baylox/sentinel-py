@@ -4,6 +4,7 @@ import requests
 from tqdm import tqdm
 
 from .base import BaseScanner
+from ..models.results import HTTPScanResult
 
 
 class HTTPScanner(BaseScanner):
@@ -89,4 +90,11 @@ class HTTPScanner(BaseScanner):
                     }
                 )
 
-        return {"open_ports": open_ports, "scan_results": results}
+        # Create HTTPScanResult
+        http_result = HTTPScanResult(
+            open_ports=open_ports,
+            scan_results=results
+        )
+        
+        return http_result.to_dict()
+

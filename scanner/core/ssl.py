@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict
 
 from .base import BaseScanner
+from ..models.results import SSLScanResult
 
 
 class SSLScanner(BaseScanner):
@@ -43,7 +44,10 @@ class SSLScanner(BaseScanner):
                     cert = ssock.getpeercert()
 
             if not cert:
-                return {"ok": False, "error": "Aucun certificat présenté"}
+                return SSLScanResult(
+                    ok=False,
+                    error="Aucun certificat présenté"
+                ).to_dict()
 
             subj = self._flatten(cert.get("subject", ()))
             issu = self._flatten(cert.get("issuer", ()))
@@ -51,16 +55,24 @@ class SSLScanner(BaseScanner):
             na = self._parse_dt(cert.get("notAfter"))
             days_left = (na - datetime.now(timezone.utc)).days if na else None
 
-            return {
-                "ok": True,
-                "issued_to": subj.get("commonName"),
-                "issued_by": issu.get("commonName"),
-                "valid_from": nb.isoformat() if nb else None,
-                "valid_until": na.isoformat() if na else None,
-                "days_left": days_left,
-                "expired": (days_left is not None and days_left < 0),
-            }
+            return SSLScanResult(
+                ok=True,
+                issued_to=subj.get("commonName"),
+                issued_by=issu.get("commonName"),
+                valid_from=nb.isoformat() if nb else None,
+                valid_until=na.isoformat() if na else None,
+                days_left=days_left,
+                expired=(days_left is not None and days_left < 0)
+            ).to_dict()
+            
         except ssl.SSLError as e:
-            return {"ok": False, "error": f"SSL error: {e}"}
+            return SSLScanResult(
+                ok=False,
+                error=f"SSL error: {e}"
+            ).to_dict()
         except OSError as e:
-            return {"ok": False, "error": f"Socket error: {e}"}
+            return SSLScanResult(
+                ok=False,
+                error=f"Socket error: {e}"
+            ).to_dict()
+

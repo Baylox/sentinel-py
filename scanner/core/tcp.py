@@ -6,6 +6,7 @@ from tqdm import tqdm
 from .base import BaseScanner
 from ..exceptions import HostResolutionError
 from ..models.ports import PortResult, PortScanResults
+from ..models.results import TCPScanResult
 from ..utils.validators import parse_port_range
 
 
@@ -101,4 +102,11 @@ class TCPScanner(BaseScanner):
             result = self._scan_single_port(host, port)
             results.add_result(result)
 
-        return results.to_dict()
+        # Create TCPScanResult
+        tcp_result = TCPScanResult(
+            open_ports=results.open_ports,
+            scan_results=[vars(r) for r in results.scan_results]
+        )
+        
+        return tcp_result.to_dict()
+
