@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 class BaseScanner(ABC):
@@ -11,17 +11,21 @@ class BaseScanner(ABC):
 
     Attributes:
         timeout (float): Default timeout for scanner operations in seconds.
+        rate_limiter (Optional[RateLimiter]): Rate limiter to control scan speed.
     """
 
-    def __init__(self, timeout: float = 0.5):
+    def __init__(self, timeout: float = 0.5, rate_limiter: Optional[Any] = None):
         """
         Initialize the base scanner.
 
         Args:
             timeout (float): Default timeout for scanner operations in seconds.
                            Different scanners may use different default values.
+            rate_limiter (Optional[RateLimiter]): Rate limiter instance to control
+                           request frequency. If None, no rate limiting is applied.
         """
         self.timeout = timeout
+        self.rate_limiter = rate_limiter
 
     @abstractmethod
     def scan(self, host: str, *args, **kwargs) -> Dict[str, Any]:

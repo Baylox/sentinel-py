@@ -8,9 +8,9 @@ from .base import BaseScanner
 
 
 class HTTPScanner(BaseScanner):
-    def __init__(self, timeout: float = 3.0):
-        # Set the timeout for HTTP requests
-        super().__init__(timeout)
+    def __init__(self, timeout: float = 3.0, rate_limiter=None):
+        # Set the timeout for HTTP requests and pass rate_limiter to base
+        super().__init__(timeout, rate_limiter)
 
     def _identify_web_server(self, server_header: str) -> str:
         """
@@ -53,6 +53,10 @@ class HTTPScanner(BaseScanner):
         results = []
 
         for port in tqdm(ports, desc="Scanning HTTP ports", unit="port"):
+            # Apply rate limiting if configured
+            if self.rate_limiter:
+                self.rate_limiter.wait()
+            
             url = f"http://{host}:{port}/"
 
             try:

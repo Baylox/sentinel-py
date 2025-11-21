@@ -8,8 +8,8 @@ from .base import BaseScanner
 
 
 class SSLScanner(BaseScanner):
-    def __init__(self, timeout=5.0, verify=True):
-        super().__init__(timeout)
+    def __init__(self, timeout=5.0, verify=True, rate_limiter=None):
+        super().__init__(timeout, rate_limiter)
         self.verify = verify
 
     def _parse_dt(self, s):
@@ -33,6 +33,10 @@ class SSLScanner(BaseScanner):
         return out
 
     def scan(self, host: str, port: int = 443) -> Dict[str, Any]:
+        # Apply rate limiting if configured
+        if self.rate_limiter:
+            self.rate_limiter.wait()
+        
         ctx = ssl.create_default_context()
         if not self.verify:
             ctx.check_hostname = False

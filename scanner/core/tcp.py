@@ -1,3 +1,4 @@
+
 import socket
 from typing import Dict
 
@@ -13,14 +14,15 @@ from .base import BaseScanner
 class TCPScanner(BaseScanner):
     """Main port scanner implementation."""
 
-    def __init__(self, timeout: float = 0.5):
+    def __init__(self, timeout: float = 0.5, rate_limiter=None):
         """
         Initialize the port scanner.
 
         Args:
             timeout (float): Default timeout for port connections in seconds.
+            rate_limiter (Optional[RateLimiter]): Rate limiter for controlling scan speed.
         """
-        super().__init__(timeout)
+        super().__init__(timeout, rate_limiter)
 
     def _check_host_resolution(self, host: str) -> None:
         """
@@ -99,6 +101,10 @@ class TCPScanner(BaseScanner):
 
         # Scan each port in range (using tqdm for progress bar)
         for port in tqdm(range(start, end + 1), desc=f"Scanning {host}"):
+            # Apply rate limiting if configured
+            if self.rate_limiter:
+                self.rate_limiter.wait()
+            
             result = self._scan_single_port(host, port)
             results.add_result(result)
 

@@ -63,6 +63,46 @@ sentinelpy example.com 20-80 --json results.json
 python main.py example.com 20-80
 ```
 
+## Rate Limiting
+
+SentinelPy includes built-in rate limiting to prevent target overload and reduce scan detectability. This is **essential for ethical scanning** and helps avoid unintentional denial-of-service.
+
+### Presets
+
+| Preset                | Delay             | Requests/sec | Use Case                                 |
+| --------------------- | ----------------- | ------------ | ---------------------------------------- |
+| `--preset stealth`    | ~1s (with jitter) | ~1 req/s     | Discrete scans, simulates human behavior |
+| `--preset normal`     | 50ms              | ~20 req/s    | **Default**, balanced speed and stealth  |
+| `--preset aggressive` | 10ms              | ~100 req/s   | Fast scans on internal networks          |
+| `--preset none`       | No delay          | Unlimited    | Local testing only, **not recommended**  |
+
+### Examples
+
+```bash
+# Default scan (normal preset: 50ms delay, ~20 req/s)
+sentinelpy example.com 1-1000
+
+# Stealth scan for external targets
+sentinelpy example.com 1-1000 --preset stealth
+
+# Fast scan for internal networks
+sentinelpy 192.168.1.1 1-1000 --preset aggressive
+
+# Custom delay (5 requests per second)
+sentinelpy example.com 1-100 --delay 0.2
+
+# Disable rate limiting (use responsibly)
+sentinelpy localhost 1-1000 --preset none
+```
+
+> [!WARNING] > **Ethical Use**: Even with rate limiting disabled, you must only scan systems you own or have explicit authorization to test. Unauthorized scanning may be illegal.
+
+> [!IMPORTANT] > **Safety Features**:
+>
+> - When using `--preset none`, a warning will be logged to remind you of the risks
+> - For scans over 1000 ports with `--preset none`, the aggressive preset (10ms delay) is automatically enforced to prevent accidental DoS
+> - These safety measures protect both you and your targets
+
 For all options:
 
 ```bash

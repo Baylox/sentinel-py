@@ -163,6 +163,20 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--verbose", action="store_true", help="Show closed ports too"
     )
 
+    # Rate limiting options
+    rate_opts = parser.add_argument_group("Rate limiting options")
+    rate_opts.add_argument(
+        "--preset",
+        choices=["stealth", "normal", "aggressive", "none"],
+        default="normal",
+        help="Rate limiting preset: stealth (~1s+jitter), normal (50ms, ~20 req/s), aggressive (10ms), none (no limit)"
+    )
+    rate_opts.add_argument(
+        "--delay",
+        type=float,
+        help="Custom delay between requests in seconds (overrides --preset)"
+    )
+
     # Parse and validate
     args = parser.parse_args(remaining_args)
 
