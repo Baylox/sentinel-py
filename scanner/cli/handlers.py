@@ -1,4 +1,4 @@
-from scanner.utils.logging_tools import clear_logs, show_logs
+from scanner.logging import clear_logs, show_logs
 
 
 def handle_utility_operations(args):

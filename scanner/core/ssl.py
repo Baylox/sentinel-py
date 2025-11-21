@@ -13,6 +13,14 @@ class SSLScanner(BaseScanner):
         self.verify = verify
 
     def _parse_dt(self, s):
+        """Parse SSL certificate date string into datetime object.
+        
+        Args:
+            s: Date string from certificate (e.g., 'Jan  1 00:00:00 2024 GMT')
+            
+        Returns:
+            datetime object or None if parsing fails
+        """
         if not isinstance(s, str):
             return None
         for fix in (lambda x: x, lambda x: x.replace("  ", " ")):
@@ -21,8 +29,12 @@ class SSLScanner(BaseScanner):
                     tzinfo=timezone.utc
                 )
                 return dt
-            except Exception:
-                pass
+            except ValueError as e:
+                # Log the parsing failure for debugging
+                import logging
+                logger = logging.getLogger("sentinelpy")
+                logger.debug(f"Failed to parse certificate date '{s}': {e}")
+                continue
         return None
 
     def _flatten(self, name):

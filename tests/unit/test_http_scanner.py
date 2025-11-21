@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
 
+import requests
+
 from scanner.core.http import HTTPScanner
 
 
@@ -26,7 +28,7 @@ def test_http_scanner_success(mock_get):
 @patch("scanner.core.http.requests.get")
 def test_http_scanner_error(mock_get):
     """Test HTTPScanner handles request exceptions."""
-    mock_get.side_effect = Exception("Timeout or connection error")
+    mock_get.side_effect = requests.RequestException("Timeout or connection error")
 
     scanner = HTTPScanner(timeout=1)
     result = scanner.scan("badhost", [1234])

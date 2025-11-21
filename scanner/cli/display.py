@@ -65,7 +65,7 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
             log_with_context(
                 logger, logging.INFO, "Results exported successfully", context="EXPORT"
             )
-        except Exception as e:
+        except (IOError, OSError) as e:
             log_with_context(
                 logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT"
             )
@@ -80,7 +80,7 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
             log_with_context(
                 logger, logging.INFO, "Results exported successfully", context="EXPORT"
             )
-        except Exception as e:
+        except (IOError, OSError) as e:
             log_with_context(
                 logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT"
             )
@@ -94,5 +94,3 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
         log_with_context(
             logger, logging.INFO, "Results printed as JSON", context="EXPORT"
         )
-    else:
-        export_to_json(results)

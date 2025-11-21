@@ -60,8 +60,8 @@ class HTTPScanner(BaseScanner):
             url = f"http://{host}:{port}/"
 
             try:
-                # Send GET request
-                resp = requests.get(url, timeout=self.timeout)
+                # Send GET request (disable SSL verification for scanning purposes)
+                resp = requests.get(url, timeout=self.timeout, verify=False)
                 server_header = resp.headers.get("Server", "Unknown")
                 server_type = self._identify_web_server(server_header)
 
@@ -80,7 +80,7 @@ class HTTPScanner(BaseScanner):
                     }
                 )
 
-            except Exception as e:
+            except requests.RequestException as e:
                 # If error occurs (timeout, connection refused, etc.)
                 results.append(
                     {

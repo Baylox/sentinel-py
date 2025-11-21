@@ -4,8 +4,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-# Define export directory path
-EXPORT_DIR = Path(__file__).resolve().parent.parent / "exports"
+# Define export directory path (at project root)
+EXPORT_DIR = Path(__file__).resolve().parent.parent.parent / "exports"
 
 
 def safe_filename(name: str) -> str:
@@ -36,7 +36,7 @@ def export_to_json(data: Any, filename: str = None) -> None:
         with open(full_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
         print(f"\nResults exported to: {full_path}")
-    except Exception as e:
+    except (IOError, OSError) as e:
         print(f"Error while exporting to JSON: {e}")
 
 
@@ -92,7 +92,7 @@ def export_to_csv(data: Any, host: str, filename: str = None) -> None:
                     writer.writerow([host, port, status, service, banner])
 
         print(f"\nResults exported to: {full_path}")
-    except Exception as e:
+    except (IOError, OSError) as e:
         print(f"Error while exporting to CSV: {e}")
 
 
@@ -121,7 +121,7 @@ def clean_exports() -> None:
                 try:
                     file.unlink()
                     deleted += 1
-                except Exception as e:
+                except (IOError, OSError) as e:
                     print(f"Failed to delete {file}: {e}")
         print(f"{deleted} file(s) deleted.")
     else:
