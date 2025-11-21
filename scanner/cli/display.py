@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict
 
 from scanner.logging import log_with_context
-from scanner.utils.exporter import export_to_json
+from scanner.utils.exporter import export_to_json, export_to_csv
 
 
 def display_results(results: Dict[str, Any]) -> None:
@@ -62,6 +62,21 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
             
             with open(args.json, "w") as f:
                 json.dump(results, f, indent=2)
+            log_with_context(
+                logger, logging.INFO, "Results exported successfully", context="EXPORT"
+            )
+        except Exception as e:
+            log_with_context(
+                logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT"
+            )
+            raise
+
+    if hasattr(args, "csv") and args.csv:
+        log_with_context(
+            logger, logging.INFO, f"Exporting results to {args.csv}", context="EXPORT"
+        )
+        try:
+            export_to_csv(results, args.host, args.csv)
             log_with_context(
                 logger, logging.INFO, "Results exported successfully", context="EXPORT"
             )

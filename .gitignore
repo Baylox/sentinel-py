@@ -176,3 +176,4 @@ cython_debug/
 # Ignore scan result files
 result.json
 *.json
+exports/

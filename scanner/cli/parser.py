@@ -135,6 +135,9 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--json", metavar="FILENAME", help="Export results to JSON file"
     )
     output_opts.add_argument(
+        "--csv", metavar="FILENAME", help="Export results to CSV file"
+    )
+    output_opts.add_argument(
         "--print-json", action="store_true", help="Print results in JSON format"
     )
 
@@ -193,6 +196,12 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         if hasattr(args, 'json') and args.json:
             try:
                 args.json = sanitize_export_path(args.json)
+            except PathTraversalError as e:
+                parser.error(f"Invalid export path: {e}")
+
+        if hasattr(args, 'csv') and args.csv:
+            try:
+                args.csv = sanitize_export_path(args.csv)
             except PathTraversalError as e:
                 parser.error(f"Invalid export path: {e}")
         
