@@ -56,6 +56,10 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
             logger, logging.INFO, f"Exporting results to {args.json}", context="EXPORT"
         )
         try:
+            # Create parent directories if they don't exist
+            from pathlib import Path
+            Path(args.json).parent.mkdir(parents=True, exist_ok=True)
+            
             with open(args.json, "w") as f:
                 json.dump(results, f, indent=2)
             log_with_context(
