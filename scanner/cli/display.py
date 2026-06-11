@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict
 
 from scanner.logging import log_with_context
-from scanner.utils.exporter import export_to_json
+from scanner.utils.exporter import export_to_json, export_to_csv
 
 
 def display_results(results: Dict[str, Any]) -> None:
@@ -56,12 +56,31 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
             logger, logging.INFO, f"Exporting results to {args.json}", context="EXPORT"
         )
         try:
+            # Create parent directories if they don't exist
+            from pathlib import Path
+            Path(args.json).parent.mkdir(parents=True, exist_ok=True)
+            
             with open(args.json, "w") as f:
                 json.dump(results, f, indent=2)
             log_with_context(
                 logger, logging.INFO, "Results exported successfully", context="EXPORT"
             )
-        except Exception as e:
+        except (IOError, OSError) as e:
+            log_with_context(
+                logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT"
+            )
+            raise
+
+    if hasattr(args, "csv") and args.csv:
+        log_with_context(
+            logger, logging.INFO, f"Exporting results to {args.csv}", context="EXPORT"
+        )
+        try:
+            export_to_csv(results, args.host, args.csv)
+            log_with_context(
+                logger, logging.INFO, "Results exported successfully", context="EXPORT"
+            )
+        except (IOError, OSError) as e:
             log_with_context(
                 logger, logging.ERROR, f"Export failed: {str(e)}", context="EXPORT"
             )
@@ -75,5 +94,3 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
         log_with_context(
             logger, logging.INFO, "Results printed as JSON", context="EXPORT"
         )
-    else:
-        export_to_json(results)

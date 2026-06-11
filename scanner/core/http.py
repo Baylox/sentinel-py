@@ -5,12 +5,12 @@ from tqdm import tqdm
 
 from ..models.results import HTTPScanResult
 from .base import BaseScanner
+from .config import ScanConfig
+from .registry import ScannerRegistry
 
 
+@ScannerRegistry.register("http")
 class HTTPScanner(BaseScanner):
-    def __init__(self, timeout: float = 3.0):
-        # Set the timeout for HTTP requests
-        super().__init__(timeout)
 
     def _identify_web_server(self, server_header: str) -> str:
         """
@@ -38,26 +38,30 @@ class HTTPScanner(BaseScanner):
             # Fallback: take the first part of the header (e.g., "Apache/2.4.41") => "Apache"
             return server_header.split("/")[0].capitalize()
 
-    def scan(self, host: str, ports: List[int]) -> Dict[str, Any]:
+    def scan(self, config: ScanConfig) -> Dict[str, Any]:
         """
         Scan a list of ports on a host using HTTP requests to detect web services.
 
         Args:
-            host: Target host (e.g., "localhost").
-            ports: List of TCP ports to scan.
+            config (ScanConfig): Scan configuration.
 
         Returns:
             Dict with open ports and detailed scan results per port.
         """
         open_ports = []
         results = []
+        start, end = config.ports
 
-        for port in tqdm(ports, desc="Scanning HTTP ports", unit="port"):
-            url = f"http://{host}:{port}/"
+        for port in tqdm(range(start, end + 1), desc="Scanning HTTP ports", unit="port"):
+            # Apply rate limiting if configured
+            if config.rate_limiter:
+                config.rate_limiter.wait()
+            
+            url = f"http://{config.host}:{port}/"
 
             try:
-                # Send GET request
-                resp = requests.get(url, timeout=self.timeout)
+                # Send GET request (disable SSL verification for scanning purposes)
+                resp = requests.get(url, timeout=config.timeout, verify=False)
                 server_header = resp.headers.get("Server", "Unknown")
                 server_type = self._identify_web_server(server_header)
 
@@ -76,7 +80,7 @@ class HTTPScanner(BaseScanner):
                     }
                 )
 
-            except Exception as e:
+            except requests.RequestException as e:
                 # If error occurs (timeout, connection refused, etc.)
                 results.append(
                     {

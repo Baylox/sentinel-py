@@ -1,3 +1,4 @@
+
 import socket
 from typing import Dict
 
@@ -6,21 +7,14 @@ from tqdm import tqdm
 from ..exceptions import HostResolutionError
 from ..models.ports import PortResult, PortScanResults
 from ..models.results import TCPScanResult
-from ..utils.validators import parse_port_range
 from .base import BaseScanner
+from .config import ScanConfig
+from .registry import ScannerRegistry
 
 
+@ScannerRegistry.register("tcp")
 class TCPScanner(BaseScanner):
     """Main port scanner implementation."""
-
-    def __init__(self, timeout: float = 0.5):
-        """
-        Initialize the port scanner.
-
-        Args:
-            timeout (float): Default timeout for port connections in seconds.
-        """
-        super().__init__(timeout)
 
     def _check_host_resolution(self, host: str) -> None:
         """
@@ -37,20 +31,21 @@ class TCPScanner(BaseScanner):
         except socket.gaierror as e:
             raise HostResolutionError(f"Could not resolve hostname '{host}': {str(e)}")
 
-    def _scan_single_port(self, host: str, port: int) -> PortResult:
+    def _scan_single_port(self, host: str, port: int, timeout: float) -> PortResult:
         """
         Scan a single port on the target host.
 
         Args:
             host (str): Target host.
             port (int): Port to scan.
+            timeout (float): Timeout for connection.
 
         Returns:
             PortResult: Result of the port scan.
         """
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(self.timeout)
+                sock.settimeout(timeout)
                 result = sock.connect_ex((host, port))
 
                 status = "open" if result == 0 else "closed"
@@ -71,13 +66,12 @@ class TCPScanner(BaseScanner):
         except socket.error as e:
             return PortResult(port=port, status="error", error=str(e))
 
-    def scan(self, host: str, ports_range: str) -> Dict[str, list]:
+    def scan(self, config: ScanConfig) -> Dict[str, list]:
         """
         Scan the specified TCP port range on a given host.
 
         Args:
-            host (str): Target IP address or domain name.
-            ports_range (str): Port range in the format 'start-end' (e.g., '20-80').
+            config (ScanConfig): Scan configuration.
 
         Returns:
             dict: Dictionary containing scan results:
@@ -89,17 +83,21 @@ class TCPScanner(BaseScanner):
             PortRangeError: If the port range is invalid
         """
         # Verify host can be resolved
-        self._check_host_resolution(host)
+        self._check_host_resolution(config.host)
 
-        # Parse and validate port range
-        start, end = parse_port_range(ports_range)
+        # Parse and validate port range is already done in config
+        start, end = config.ports
 
         # Initialize results container
         results = PortScanResults()
 
         # Scan each port in range (using tqdm for progress bar)
-        for port in tqdm(range(start, end + 1), desc=f"Scanning {host}"):
-            result = self._scan_single_port(host, port)
+        for port in tqdm(range(start, end + 1), desc=f"Scanning {config.host}"):
+            # Apply rate limiting if configured
+            if config.rate_limiter:
+                config.rate_limiter.wait()
+            
+            result = self._scan_single_port(config.host, port, config.timeout)
             results.add_result(result)
 
         # Create TCPScanResult

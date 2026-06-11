@@ -1,6 +1,9 @@
 from unittest.mock import MagicMock, patch
 
+import requests
+
 from scanner.core.http import HTTPScanner
+from scanner.core.config import ScanConfig
 
 
 @patch("scanner.core.http.requests.get")
@@ -13,8 +16,9 @@ def test_http_scanner_success(mock_get):
     mock_response.ok = True
     mock_get.return_value = mock_response
 
-    scanner = HTTPScanner(timeout=1)
-    result = scanner.scan("testserver.com", [8080])
+    scanner = HTTPScanner()
+    config = ScanConfig(host="testserver.com", ports=(8080, 8080), timeout=1.0)
+    result = scanner.scan(config)
 
     assert result["open_ports"] == [8080]
     assert len(result["scan_results"]) == 1
@@ -26,10 +30,11 @@ def test_http_scanner_success(mock_get):
 @patch("scanner.core.http.requests.get")
 def test_http_scanner_error(mock_get):
     """Test HTTPScanner handles request exceptions."""
-    mock_get.side_effect = Exception("Timeout or connection error")
+    mock_get.side_effect = requests.RequestException("Timeout or connection error")
 
-    scanner = HTTPScanner(timeout=1)
-    result = scanner.scan("badhost", [1234])
+    scanner = HTTPScanner()
+    config = ScanConfig(host="badhost", ports=(1234, 1234), timeout=1.0)
+    result = scanner.scan(config)
 
     assert result["open_ports"] == []
     assert len(result["scan_results"]) == 1

@@ -145,5 +145,5 @@ def show_logs(logfile: Optional[str] = None) -> str:
     try:
         with open(log_path, "r", encoding="utf-8") as f:
             return f.read()
-    except Exception as e:
+    except (IOError, OSError) as e:
         return f"Error reading log file: {str(e)}"

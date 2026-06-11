@@ -3,6 +3,12 @@ import re
 from typing import List, Optional
 
 from ..exceptions import PortRangeError
+from ..core.registry import ScannerRegistry
+
+# Import scanners to ensure registry is populated before parsing
+import scanner.core.tcp
+import scanner.core.http
+import scanner.core.ssl
 
 
 class CLIValidationError(Exception):
@@ -105,12 +111,13 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     required.add_argument("ports", help="Port range (e.g., 20-80)")
 
     # Module selection
+    available_modules = ScannerRegistry.get_available_modules()
     required.add_argument(
         "--modules",
         nargs="+",
-        choices=["tcp", "http", "ssl"],
+        choices=available_modules,
         default=["tcp"],
-        help="Scan modules to enable (default: tcp)",
+        help=f"Scan modules to enable (default: tcp). Available: {', '.join(available_modules)}",
     )
 
     # Scan options
@@ -133,6 +140,9 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     output_opts = parser.add_argument_group("Output options")
     output_opts.add_argument(
         "--json", metavar="FILENAME", help="Export results to JSON file"
+    )
+    output_opts.add_argument(
+        "--csv", metavar="FILENAME", help="Export results to CSV file"
     )
     output_opts.add_argument(
         "--print-json", action="store_true", help="Print results in JSON format"
@@ -163,16 +173,51 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--verbose", action="store_true", help="Show closed ports too"
     )
 
+    # Rate limiting options
+    rate_opts = parser.add_argument_group("Rate limiting options")
+    rate_opts.add_argument(
+        "--preset",
+        choices=["stealth", "normal", "aggressive", "none"],
+        default="normal",
+        help="Rate limiting preset: stealth (~1s+jitter), normal (50ms, ~20 req/s), aggressive (10ms), none (no limit)"
+    )
+    rate_opts.add_argument(
+        "--delay",
+        type=float,
+        help="Custom delay between requests in seconds (overrides --preset)"
+    )
+
     # Parse and validate
     args = parser.parse_args(remaining_args)
 
     try:
         # Import here to avoid circular dependency
         from ..utils.validators import parse_port_range
+        from ..utils.path_sanitizer import sanitize_export_path, sanitize_log_path, PathTraversalError
 
         args.ports = parse_port_range(args.ports)
         args.timeout = validate_timeout(args.timeout)
         args.host = validate_host(args.host)
+        
+        # Sanitize file paths to prevent path traversal
+        if hasattr(args, 'json') and args.json:
+            try:
+                args.json = sanitize_export_path(args.json)
+            except PathTraversalError as e:
+                parser.error(f"Invalid export path: {e}")
+
+        if hasattr(args, 'csv') and args.csv:
+            try:
+                args.csv = sanitize_export_path(args.csv)
+            except PathTraversalError as e:
+                parser.error(f"Invalid export path: {e}")
+        
+        if hasattr(args, 'logfile') and args.logfile:
+            try:
+                args.logfile = sanitize_log_path(args.logfile)
+            except PathTraversalError as e:
+                parser.error(f"Invalid log file path: {e}")
+                
     except PortRangeError as e:
         # Wrap PortRangeError as parser error
         parser.error(str(e))

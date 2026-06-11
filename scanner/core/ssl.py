@@ -5,14 +5,22 @@ from typing import Any, Dict
 
 from ..models.results import SSLScanResult
 from .base import BaseScanner
+from .config import ScanConfig
+from .registry import ScannerRegistry
 
 
+@ScannerRegistry.register("ssl")
 class SSLScanner(BaseScanner):
-    def __init__(self, timeout=5.0, verify=True):
-        super().__init__(timeout)
-        self.verify = verify
 
     def _parse_dt(self, s):
+        """Parse SSL certificate date string into datetime object.
+        
+        Args:
+            s: Date string from certificate (e.g., 'Jan  1 00:00:00 2024 GMT')
+            
+        Returns:
+            datetime object or None if parsing fails
+        """
         if not isinstance(s, str):
             return None
         for fix in (lambda x: x, lambda x: x.replace("  ", " ")):
@@ -21,8 +29,12 @@ class SSLScanner(BaseScanner):
                     tzinfo=timezone.utc
                 )
                 return dt
-            except Exception:
-                pass
+            except ValueError as e:
+                # Log the parsing failure for debugging
+                import logging
+                logger = logging.getLogger("sentinelpy")
+                logger.debug(f"Failed to parse certificate date '{s}': {e}")
+                continue
         return None
 
     def _flatten(self, name):
@@ -32,15 +44,22 @@ class SSLScanner(BaseScanner):
                 out[k] = v
         return out
 
-    def scan(self, host: str, port: int = 443) -> Dict[str, Any]:
+    def scan(self, config: ScanConfig) -> Dict[str, Any]:
+        # Apply rate limiting if configured
+        if config.rate_limiter:
+            config.rate_limiter.wait()
+        
+        verify = config.extras.get("verify", True)
+        port = config.extras.get("ssl_port", 443)
+        
         ctx = ssl.create_default_context()
-        if not self.verify:
+        if not verify:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
 
         try:
-            with socket.create_connection((host, port), timeout=self.timeout) as sock:
-                with ctx.wrap_socket(sock, server_hostname=host) as ssock:
+            with socket.create_connection((config.host, port), timeout=config.timeout) as sock:
+                with ctx.wrap_socket(sock, server_hostname=config.host) as ssock:
                     cert = ssock.getpeercert()
 
             if not cert:
