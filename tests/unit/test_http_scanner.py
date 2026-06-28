@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 import requests
 
-from scanner.core.http import HTTPScanner
 from scanner.core.config import ScanConfig
+from scanner.core.http import HTTPScanner
 
 
 @patch("scanner.core.http.requests.get")

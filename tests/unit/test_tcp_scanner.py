@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
-from scanner.core.tcp import TCPScanner
 from scanner.core.config import ScanConfig
+from scanner.core.tcp import TCPScanner
 
 
 @patch("scanner.core.tcp.socket.socket")

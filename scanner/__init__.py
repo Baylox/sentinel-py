@@ -1,5 +1,7 @@
+from .core.config import ScanConfig
 from .core.tcp import TCPScanner
 from .exceptions import HostResolutionError, PortRangeError, PortScannerError
+from .utils.validators import parse_port_range
 
 
 def scan_ports(host: str, ports_range: str, timeout: float = 0.5) -> dict:
@@ -15,9 +17,17 @@ def scan_ports(host: str, ports_range: str, timeout: float = 0.5) -> dict:
         dict: Dictionary containing:
             - 'open_ports': List of open port numbers
             - 'scan_results': List of dictionaries with detailed port information
+
+    Raises:
+        PortRangeError: If the port range is invalid.
+        HostResolutionError: If the host cannot be resolved.
     """
-    scanner = TCPScanner(timeout=timeout)
-    return scanner.scan(host, ports_range)
+    config = ScanConfig(
+        host=host,
+        ports=parse_port_range(ports_range),
+        timeout=timeout,
+    )
+    return TCPScanner().scan(config)
 
 
 __all__ = [

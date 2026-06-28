@@ -63,10 +63,13 @@ class TestSanitizeFilepath:
     def test_absolute_path_converted_to_relative(self):
         """Test that absolute paths are converted when allow_absolute=False."""
         # Test with a simple filename instead of absolute path to avoid cross-platform issues
-        import tempfile
         import os
+        import tempfile
+
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = sanitize_filepath("passwd.txt", base_dir=tmpdir, allow_absolute=False)
+            result = sanitize_filepath(
+                "passwd.txt", base_dir=tmpdir, allow_absolute=False
+            )
             result_path = Path(result)
             assert result_path.name == "passwd.txt"
             # Should be within the base_dir
@@ -90,7 +93,7 @@ class TestSanitizeFilepath:
             "..\\..\\secret.txt",
             "test/../../../etc/passwd",
         ]
-        
+
         for path in dangerous_paths:
             with pytest.raises(PathTraversalError):
                 sanitize_filepath(path, base_dir="/app")
@@ -147,6 +150,10 @@ class TestSanitizeExportPath:
         """Test that subdirectories within exports/ are allowed."""
         result = sanitize_export_path("reports/scan_2024.json")
         result_path = Path(result)
+        assert result_path.name == "scan_2024.json"
+        assert "exports" in result_path.parts
+        assert "reports" in result_path.parts
+
     """Test real-world path traversal attack scenarios."""
 
     def test_windows_path_traversal(self):
@@ -155,11 +162,11 @@ class TestSanitizeExportPath:
             "..\\..\\..\\windows\\system32\\config\\sam",
             "test\\..\\..\\secret.txt",
         ]
-        
+
         for attack in attacks:
             with pytest.raises(PathTraversalError):
                 # Use a Windows-style base on Windows, Unix-style otherwise
-                base = "C:\\app" if os.name == 'nt' else "/app"
+                base = "C:\\app" if os.name == "nt" else "/app"
                 sanitize_filepath(attack, base_dir=base)
 
     def test_unix_path_traversal(self):
@@ -168,7 +175,7 @@ class TestSanitizeExportPath:
             "../../../etc/shadow",
             "logs/../../../root/.ssh/id_rsa",
         ]
-        
+
         for attack in attacks:
             with pytest.raises(PathTraversalError):
                 sanitize_filepath(attack, base_dir="/app")

@@ -18,7 +18,6 @@ def test_validate_port_range_error(ports):
         parse_port_range(ports)
 
 
-
 @pytest.mark.parametrize("host", ["127.0.0.1", "localhost", "example.com"])
 def test_validate_host_ok(host):
     assert validate_host(host) == host

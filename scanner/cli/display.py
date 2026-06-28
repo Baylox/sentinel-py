@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict
 
 from scanner.logging import log_with_context
-from scanner.utils.exporter import export_to_json, export_to_csv
+from scanner.utils.exporter import export_to_csv
 
 
 def display_results(results: Dict[str, Any]) -> None:
@@ -58,8 +58,9 @@ def handle_output(results: Dict[str, Any], args: Any) -> None:
         try:
             # Create parent directories if they don't exist
             from pathlib import Path
+
             Path(args.json).parent.mkdir(parents=True, exist_ok=True)
-            
+
             with open(args.json, "w") as f:
                 json.dump(results, f, indent=2)
             log_with_context(
