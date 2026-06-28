@@ -13,12 +13,13 @@ def test_parse_minimal():
 
 
 def test_parse_json_flag(tmp_path):
-    """Parse with --json flag; ensure file path is sanitized to exports/ and port tuple are captured."""
+    """Parse --json flag: path is sanitized to exports/ and port tuple captured."""
     json_file = tmp_path / "out.json"
     ns = parse_args(["127.0.0.1", "80-80", "--json", str(json_file)])
 
     # Path should be sanitized to exports/out.json (just the filename)
     from pathlib import Path
+
     assert Path(ns.json).name == "out.json"
     assert "exports" in Path(ns.json).parts
     assert ns.ports == (80, 80)  # tuple after validation

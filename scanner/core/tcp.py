@@ -1,4 +1,3 @@
-
 import socket
 from typing import Dict
 
@@ -96,7 +95,7 @@ class TCPScanner(BaseScanner):
             # Apply rate limiting if configured
             if config.rate_limiter:
                 config.rate_limiter.wait()
-            
+
             result = self._scan_single_port(config.host, port, config.timeout)
             results.add_result(result)
 

@@ -1,9 +1,11 @@
-from typing import Dict, Type, List, Optional
+from typing import Dict, List, Optional, Type
+
 
 class ScannerRegistry:
     """
     Registry for dynamic discovery and instantiation of scanners.
     """
+
     _scanners: Dict[str, Type] = {}
 
     @classmethod
@@ -11,9 +13,11 @@ class ScannerRegistry:
         """
         Decorator to register a scanner class under a specific name.
         """
+
         def decorator(scanner_class):
             cls._scanners[name] = scanner_class
             return scanner_class
+
         return decorator
 
     @classmethod

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import requests
 from tqdm import tqdm
@@ -51,17 +51,22 @@ class HTTPScanner(BaseScanner):
         open_ports = []
         results = []
         start, end = config.ports
+        # Honour the --no-verify flag, consistent with the SSL scanner.
+        # (URLs are plain http://, so this has no effect today, but it keeps
+        # behaviour configurable and the default secure.)
+        verify = config.extras.get("verify", True)
 
-        for port in tqdm(range(start, end + 1), desc="Scanning HTTP ports", unit="port"):
+        for port in tqdm(
+            range(start, end + 1), desc="Scanning HTTP ports", unit="port"
+        ):
             # Apply rate limiting if configured
             if config.rate_limiter:
                 config.rate_limiter.wait()
-            
+
             url = f"http://{config.host}:{port}/"
 
             try:
-                # Send GET request (disable SSL verification for scanning purposes)
-                resp = requests.get(url, timeout=config.timeout, verify=False)
+                resp = requests.get(url, timeout=config.timeout, verify=verify)
                 server_header = resp.headers.get("Server", "Unknown")
                 server_type = self._identify_web_server(server_header)
 

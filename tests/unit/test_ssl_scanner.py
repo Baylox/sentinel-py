@@ -1,10 +1,9 @@
-import socket
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from scanner.core.ssl import SSLScanner
 from scanner.core.config import ScanConfig
+from scanner.core.ssl import SSLScanner
 
 
 @pytest.fixture
@@ -28,17 +27,22 @@ def test_ssl_scanner_valid_certificate(mock_ssl_context, mock_socket, ssl_scanne
     # Setup mocks
     mock_ssock = MagicMock()
     mock_ssock.getpeercert.return_value = mock_cert
-    
+
     mock_sock = MagicMock()
     mock_sock.__enter__ = MagicMock(return_value=mock_ssock)
     mock_sock.__exit__ = MagicMock(return_value=False)
-    
+
     mock_context = MagicMock()
     mock_context.wrap_socket.return_value = mock_sock
     mock_ssl_context.return_value = mock_context
 
     # Run scan
-    config = ScanConfig(host="example.com", ports=(443, 443), timeout=2.0, extras={"verify": True, "ssl_port": 443})
+    config = ScanConfig(
+        host="example.com",
+        ports=(443, 443),
+        timeout=2.0,
+        extras={"verify": True, "ssl_port": 443},
+    )
     result = ssl_scanner.scan(config)
 
     # Assertions
@@ -63,7 +67,12 @@ def test_ssl_scanner_no_certificate(mock_socket, ssl_scanner):
         mock_ssl_context.return_value = mock_context
 
         # Run scan
-        config = ScanConfig(host="example.com", ports=(443, 443), timeout=2.0, extras={"verify": True, "ssl_port": 443})
+        config = ScanConfig(
+            host="example.com",
+            ports=(443, 443),
+            timeout=2.0,
+            extras={"verify": True, "ssl_port": 443},
+        )
         result = ssl_scanner.scan(config)
 
         # Assertions
@@ -79,7 +88,12 @@ def test_ssl_scanner_connection_error(mock_socket, ssl_scanner):
     mock_socket.side_effect = OSError("Connection refused")
 
     # Run scan
-    config = ScanConfig(host="invalid-host.local", ports=(443, 443), timeout=2.0, extras={"verify": True, "ssl_port": 443})
+    config = ScanConfig(
+        host="invalid-host.local",
+        ports=(443, 443),
+        timeout=2.0,
+        extras={"verify": True, "ssl_port": 443},
+    )
     result = ssl_scanner.scan(config)
 
     # Assertions

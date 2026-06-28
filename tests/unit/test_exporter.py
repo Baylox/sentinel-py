@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import pytest
 
@@ -25,8 +24,9 @@ def test_export_to_json_creates_file(tmp_path, sample_results, monkeypatch):
     """Test that export_to_json creates a valid JSON file."""
     # Patch EXPORT_DIR to use tmp_path
     from scanner.utils import exporter
+
     monkeypatch.setattr(exporter, "EXPORT_DIR", tmp_path)
-    
+
     output_file = "test_export.json"
 
     # Export results

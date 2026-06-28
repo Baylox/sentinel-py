@@ -5,9 +5,11 @@
 # ------------------------------------------------------------
 
 # phony targets
-.PHONY: help test lint format check coverage clean
+.PHONY: help test lint typecheck format check coverage security clean
 
-PY = .venv/Scripts/python.exe  # Change to `python` if you always activate venv
+# Portable interpreter: defaults to `python`, override with `make PY=...`
+# (e.g. `make PY=.venv/Scripts/python.exe` on Windows, or `make PY=python3`).
+PY ?= python
 
 help:       ## Show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -18,6 +20,13 @@ test:       ## Run the unit-test suite
 
 lint:       ## flake8 on source and tests
 	$(PY) -m flake8 scanner tests
+
+typecheck:  ## Static type-check with mypy
+	$(PY) -m mypy scanner
+
+security:   ## Static security scan (bandit) & dependency audit (pip-audit)
+	$(PY) -m bandit -r scanner
+	$(PY) -m pip_audit
 
 format:     ## Apply isort & black
 	$(PY) -m isort .

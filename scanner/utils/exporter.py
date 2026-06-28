@@ -2,7 +2,7 @@ import json
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 # Define export directory path (at project root)
 EXPORT_DIR = Path(__file__).resolve().parent.parent.parent / "exports"
@@ -15,7 +15,7 @@ def safe_filename(name: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_\-\.]", "_", name)
 
 
-def export_to_json(data: Any, filename: str = None) -> None:
+def export_to_json(data: Any, filename: Optional[str] = None) -> None:
     """
     Export scan results to a JSON file.
     If no filename is provided, a timestamped one is generated automatically.
@@ -40,7 +40,7 @@ def export_to_json(data: Any, filename: str = None) -> None:
         print(f"Error while exporting to JSON: {e}")
 
 
-def export_to_csv(data: Any, host: str, filename: str = None) -> None:
+def export_to_csv(data: Any, host: str, filename: Optional[str] = None) -> None:
     """
     Export scan results to a CSV file.
     If no filename is provided, a timestamped one is generated automatically.
@@ -82,13 +82,9 @@ def export_to_csv(data: Any, host: str, filename: str = None) -> None:
                     port = entry.get("port")
                     status = entry.get("status", "unknown")
                     service = entry.get("service", "N/A")
-                    # Banner might not be present in all modules, but if it is, use it.
-                    # For now, we'll leave it empty if not found, or try to extract from 'raw' if available?
-                    # The user example showed 'banner', let's see if we have it.
-                    # Looking at previous display logic, it doesn't explicitly show banner.
-                    # But let's assume it might be in the entry or we leave it blank.
+                    # Banner is optional and only present for modules that capture it.
                     banner = entry.get("banner", "")
-                    
+
                     writer.writerow([host, port, status, service, banner])
 
         print(f"\nResults exported to: {full_path}")

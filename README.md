@@ -125,6 +125,9 @@ source .venv/bin/activate
 
 # Install with dev dependencies
 pip install -e ".[dev]"
+
+# Install the pre-commit hooks (runs black, isort & flake8 on each commit)
+pre-commit install
 ```
 
 ### Code Quality
@@ -137,12 +140,31 @@ isort scanner/ tests/
 # Lint
 flake8 scanner/ tests/
 
+# Type-check
+mypy scanner/
+
 # Run tests
 pytest
 
 # With coverage
 pytest --cov=scanner --cov-report=html
+
+# Security scan (static analysis + dependency audit)
+bandit -r scanner/
+pip-audit
+
+# Run all pre-commit hooks against the whole repo
+pre-commit run --all-files
 ```
+
+A `makefile` wraps these commands (`make test`, `make lint`, `make typecheck`,
+`make check`, `make coverage`, `make security`). Override the interpreter with
+`make PY=python3` if needed.
+
+### Continuous Integration
+
+Every push and pull request runs the [CI workflow](./.github/workflows/ci.yml):
+tests across Python 3.8–3.13, plus lint, type-check, and security jobs.
 
 ### Architecture
 Read the [Architecture Documentation](./docs/ARCHITECTURE.md) to understand the design patterns (Services, DTOs, Registry) used in this project.

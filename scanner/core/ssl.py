@@ -1,3 +1,4 @@
+import logging
 import socket
 import ssl
 from datetime import datetime, timezone
@@ -8,16 +9,18 @@ from .base import BaseScanner
 from .config import ScanConfig
 from .registry import ScannerRegistry
 
+logger = logging.getLogger("sentinelpy")
+
 
 @ScannerRegistry.register("ssl")
 class SSLScanner(BaseScanner):
 
     def _parse_dt(self, s):
         """Parse SSL certificate date string into datetime object.
-        
+
         Args:
             s: Date string from certificate (e.g., 'Jan  1 00:00:00 2024 GMT')
-            
+
         Returns:
             datetime object or None if parsing fails
         """
@@ -31,8 +34,6 @@ class SSLScanner(BaseScanner):
                 return dt
             except ValueError as e:
                 # Log the parsing failure for debugging
-                import logging
-                logger = logging.getLogger("sentinelpy")
                 logger.debug(f"Failed to parse certificate date '{s}': {e}")
                 continue
         return None
@@ -48,17 +49,19 @@ class SSLScanner(BaseScanner):
         # Apply rate limiting if configured
         if config.rate_limiter:
             config.rate_limiter.wait()
-        
+
         verify = config.extras.get("verify", True)
         port = config.extras.get("ssl_port", 443)
-        
+
         ctx = ssl.create_default_context()
         if not verify:
             ctx.check_hostname = False
             ctx.verify_mode = ssl.CERT_NONE
 
         try:
-            with socket.create_connection((config.host, port), timeout=config.timeout) as sock:
+            with socket.create_connection(
+                (config.host, port), timeout=config.timeout
+            ) as sock:
                 with ctx.wrap_socket(sock, server_hostname=config.host) as ssock:
                     cert = ssock.getpeercert()
 

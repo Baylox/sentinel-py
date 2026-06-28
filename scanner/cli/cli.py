@@ -6,7 +6,13 @@ from scanner import PortScannerError
 from scanner.cli.display import display_results, handle_output
 from scanner.cli.handlers import handle_utility_operations
 from scanner.cli.parser import CLIValidationError, parse_args
-from scanner.logging import SUCCESS, log_with_context, setup_logger, clear_logs, show_logs
+from scanner.logging import (
+    SUCCESS,
+    clear_logs,
+    log_with_context,
+    setup_logger,
+    show_logs,
+)
 from scanner.modules import run_selected_modules
 
 

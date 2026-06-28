@@ -2,13 +2,13 @@ import argparse
 import re
 from typing import List, Optional
 
-from ..exceptions import PortRangeError
-from ..core.registry import ScannerRegistry
+# Import scanners to ensure the registry is populated before parsing.
+import scanner.core.http  # noqa: F401
+import scanner.core.ssl  # noqa: F401
+import scanner.core.tcp  # noqa: F401
 
-# Import scanners to ensure registry is populated before parsing
-import scanner.core.tcp
-import scanner.core.http
-import scanner.core.ssl
+from ..core.registry import ScannerRegistry
+from ..exceptions import PortRangeError
 
 
 class CLIValidationError(Exception):
@@ -179,12 +179,15 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--preset",
         choices=["stealth", "normal", "aggressive", "none"],
         default="normal",
-        help="Rate limiting preset: stealth (~1s+jitter), normal (50ms, ~20 req/s), aggressive (10ms), none (no limit)"
+        help=(
+            "Rate limiting preset: stealth (~1s+jitter), "
+            "normal (50ms, ~20 req/s), aggressive (10ms), none (no limit)"
+        ),
     )
     rate_opts.add_argument(
         "--delay",
         type=float,
-        help="Custom delay between requests in seconds (overrides --preset)"
+        help="Custom delay between requests in seconds (overrides --preset)",
     )
 
     # Parse and validate
@@ -192,32 +195,36 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
     try:
         # Import here to avoid circular dependency
+        from ..utils.path_sanitizer import (
+            PathTraversalError,
+            sanitize_export_path,
+            sanitize_log_path,
+        )
         from ..utils.validators import parse_port_range
-        from ..utils.path_sanitizer import sanitize_export_path, sanitize_log_path, PathTraversalError
 
         args.ports = parse_port_range(args.ports)
         args.timeout = validate_timeout(args.timeout)
         args.host = validate_host(args.host)
-        
+
         # Sanitize file paths to prevent path traversal
-        if hasattr(args, 'json') and args.json:
+        if hasattr(args, "json") and args.json:
             try:
                 args.json = sanitize_export_path(args.json)
             except PathTraversalError as e:
                 parser.error(f"Invalid export path: {e}")
 
-        if hasattr(args, 'csv') and args.csv:
+        if hasattr(args, "csv") and args.csv:
             try:
                 args.csv = sanitize_export_path(args.csv)
             except PathTraversalError as e:
                 parser.error(f"Invalid export path: {e}")
-        
-        if hasattr(args, 'logfile') and args.logfile:
+
+        if hasattr(args, "logfile") and args.logfile:
             try:
                 args.logfile = sanitize_log_path(args.logfile)
             except PathTraversalError as e:
                 parser.error(f"Invalid log file path: {e}")
-                
+
     except PortRangeError as e:
         # Wrap PortRangeError as parser error
         parser.error(str(e))
