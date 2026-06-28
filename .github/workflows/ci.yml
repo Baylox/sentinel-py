@@ -66,8 +66,6 @@ jobs:
   typecheck:
     name: Type check (mypy)
     runs-on: ubuntu-latest
-    # Advisory for now: types are still being filled in, so don't fail the build.
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 

@@ -8,6 +8,7 @@ from typing import Any, Optional
 try:
     from rich.console import Console
     from rich.logging import RichHandler
+    from rich.text import Text
     from rich.theme import Theme
 
     RICH_AVAILABLE = True
@@ -25,7 +26,7 @@ def success(self, msg, *args, **kwargs):
         self._log(SUCCESS, msg, args, **kwargs)
 
 
-logging.Logger.success = success
+logging.Logger.success = success  # type: ignore[attr-defined]
 
 
 # Filter to inject context tags into log records
@@ -56,9 +57,9 @@ class CustomRichHandler(RichHandler):
             )
         )
 
-    def get_level_text(self, record: logging.LogRecord) -> str:
+    def get_level_text(self, record: logging.LogRecord) -> "Text":
         if record.levelno == SUCCESS:
-            return "[bold green]SUCCESS[/bold green]"
+            return Text("SUCCESS", style="bold green")
         return super().get_level_text(record)
 
 
@@ -81,6 +82,7 @@ def setup_logger(logfile: Optional[str] = None) -> logging.Logger:
     file_formatter = logging.Formatter(file_format, date_format)
 
     # Console handler (Rich if available)
+    console_handler: logging.Handler
     if RICH_AVAILABLE:
         console_handler = CustomRichHandler(
             level=logging.INFO,
