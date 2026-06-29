@@ -57,6 +57,25 @@ sentinelpy google.com 443-443 --modules ssl
 sentinelpy example.com 20-80 --json results.json
 ```
 
+### Concurrent Scanning
+
+The TCP scanner connects to ports concurrently, so the per-port connection
+timeouts overlap instead of running one after another. This makes large scans
+(and scans of filtered/unresponsive hosts) dramatically faster. Tune the number
+of concurrent connections with `--workers` (default: 100, range: 1–1000):
+
+```bash
+# Fast scan of a large range
+sentinelpy example.com 1-1000 --workers 200
+
+# Single-threaded scan (sequential)
+sentinelpy example.com 1-1000 --workers 1
+```
+
+> Rate limiting still applies: when a `--preset`/`--delay` is active, request
+> dispatch is paced globally, so concurrency overlaps the connection timeouts
+> without exceeding the configured request rate.
+
 ### Legacy Usage (Direct Python)
 
 ```bash

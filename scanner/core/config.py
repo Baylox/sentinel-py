@@ -14,4 +14,5 @@ class ScanConfig:
     ports: Tuple[int, int]
     timeout: float = 0.5
     rate_limiter: Optional[Any] = None
+    workers: int = 100
     extras: Dict[str, Any] = field(default_factory=dict)
