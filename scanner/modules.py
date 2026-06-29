@@ -61,6 +61,7 @@ def run_selected_modules(args, logger) -> Dict[str, list]:
         ports=(start_port, end_port),
         timeout=args.timeout,
         rate_limiter=rate_limiter,
+        workers=getattr(args, "workers", 100),
         extras={
             "verify": not getattr(args, "no_verify", False),
             "ssl_port": getattr(args, "ssl_port", 443),

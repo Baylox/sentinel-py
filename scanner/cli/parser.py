@@ -66,6 +66,24 @@ def validate_timeout(timeout: float) -> float:
     return timeout
 
 
+def validate_workers(workers: int) -> int:
+    """
+    Validate the worker (concurrency) count.
+
+    Args:
+        workers: Number of concurrent connections for the TCP scanner
+
+    Returns:
+        The validated worker count.
+
+    Raises:
+        CLIValidationError: If the worker count is out of bounds.
+    """
+    if not 1 <= workers <= 1000:
+        raise CLIValidationError("Workers must be between 1 and 1000")
+    return workers
+
+
 def is_utility_only(args: argparse.Namespace, remaining: list) -> bool:
     """
     Check if only utility options were passed.
@@ -128,6 +146,12 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         type=float,
         default=0.5,
         help="Timeout per scan request (default: 0.5s)",
+    )
+    scan_opts.add_argument(
+        "--workers",
+        type=int,
+        default=100,
+        help="Number of concurrent connections for the TCP scan (default: 100)",
     )
     scan_opts.add_argument(
         "--ssl-port", type=int, default=443, help="Port for SSL/TLS (default: 443)"
@@ -205,6 +229,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         args.ports = parse_port_range(args.ports)
         args.timeout = validate_timeout(args.timeout)
         args.host = validate_host(args.host)
+        args.workers = validate_workers(args.workers)
 
         # Sanitize file paths to prevent path traversal
         if hasattr(args, "json") and args.json:

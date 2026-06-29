@@ -1,4 +1,5 @@
 import socket
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict
 
 from tqdm import tqdm
@@ -86,18 +87,47 @@ class TCPScanner(BaseScanner):
 
         # Parse and validate port range is already done in config
         start, end = config.ports
+        ports = range(start, end + 1)
 
-        # Initialize results container
+        # Clamp worker count to a sane range: at least one, never more than the
+        # number of ports being scanned (avoids spawning idle threads).
+        port_count = end - start + 1
+        workers = max(1, min(config.workers, port_count))
+
+        # Scan ports concurrently. Connections overlap so their timeouts run in
+        # parallel, which is the dominant cost for closed/filtered ports.
+        #
+        # Rate limiting is preserved by pacing *submission* on this thread:
+        # rate_limiter.wait() runs sequentially before each task is queued, so
+        # the global request rate stays bounded even though the connects
+        # themselves overlap. Results are keyed by port and reassembled in
+        # ascending order to keep output deterministic.
+        results_by_port: Dict[int, PortResult] = {}
+
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = {}
+            for port in ports:
+                # Apply rate limiting if configured (paces dispatch globally)
+                if config.rate_limiter:
+                    config.rate_limiter.wait()
+
+                future = executor.submit(
+                    self._scan_single_port, config.host, port, config.timeout
+                )
+                futures[future] = port
+
+            for future in tqdm(
+                as_completed(futures),
+                total=port_count,
+                desc=f"Scanning {config.host}",
+            ):
+                port = futures[future]
+                results_by_port[port] = future.result()
+
+        # Reassemble results in ascending port order for stable output
         results = PortScanResults()
-
-        # Scan each port in range (using tqdm for progress bar)
-        for port in tqdm(range(start, end + 1), desc=f"Scanning {config.host}"):
-            # Apply rate limiting if configured
-            if config.rate_limiter:
-                config.rate_limiter.wait()
-
-            result = self._scan_single_port(config.host, port, config.timeout)
-            results.add_result(result)
+        for port in ports:
+            results.add_result(results_by_port[port])
 
         # Create TCPScanResult
         tcp_result = TCPScanResult(

@@ -1,4 +1,6 @@
 # tests/test_cli_parser.py
+import pytest
+
 from scanner.cli.parser import parse_args
 
 
@@ -10,6 +12,21 @@ def test_parse_minimal():
     assert ns.ports == (20, 30)
     # default timeout should remain unchanged
     assert ns.timeout == 0.5
+    # default worker count should remain unchanged
+    assert ns.workers == 100
+
+
+def test_parse_workers_valid():
+    """A valid --workers value is accepted."""
+    ns = parse_args(["localhost", "20-30", "--workers", "50"])
+    assert ns.workers == 50
+
+
+@pytest.mark.parametrize("value", ["0", "1001", "-5"])
+def test_parse_workers_out_of_range(value):
+    """Out-of-range --workers values are rejected by the parser."""
+    with pytest.raises(SystemExit):
+        parse_args(["localhost", "20-30", "--workers", value])
 
 
 def test_parse_json_flag(tmp_path):
