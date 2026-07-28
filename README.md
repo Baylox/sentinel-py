@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://github.com/Baylox/sentinel-py/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Baylox/sentinel-py/ci.yml?branch=main&style=flat-square&label=CI" alt="CI status"></a>
   <img src="https://img.shields.io/badge/python-3.8%20to%203.13-blue?style=flat-square" alt="Python 3.8 to 3.13">
-  <img src="https://img.shields.io/badge/tests-77%20passing-brightgreen?style=flat-square" alt="77 tests passing">
+  <img src="https://img.shields.io/badge/tests-79%20passing-brightgreen?style=flat-square" alt="79 tests passing">
   <img src="https://img.shields.io/badge/code%20style-black-000000?style=flat-square" alt="Code style: black">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License">
 </p>
