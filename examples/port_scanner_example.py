@@ -1,4 +1,6 @@
-from scanner import PortScanner, PortScannerError, scan_ports
+from scanner import PortScannerError, TCPScanner, scan_ports
+from scanner.core.config import ScanConfig
+from scanner.utils.validators import parse_port_range
 
 
 def basic_usage():
@@ -22,14 +24,18 @@ def basic_usage():
 
 
 def advanced_usage():
-    """Demonstrate advanced usage with the PortScanner class."""
+    """Demonstrate advanced usage with the TCPScanner class."""
     print("\n=== Advanced Usage ===")
     try:
-        # Create a scanner with custom timeout
-        scanner = PortScanner(timeout=1.0)
+        # Build an explicit configuration with a custom timeout
+        config = ScanConfig(
+            host="example.com",
+            ports=parse_port_range("80-443"),
+            timeout=1.0,
+        )
 
         # Scan web ports on a domain
-        results = scanner.scan("example.com", "80-443")
+        results = TCPScanner().scan(config)
 
         print("Open ports:", results["open_ports"])
         print("\nDetailed results:")
