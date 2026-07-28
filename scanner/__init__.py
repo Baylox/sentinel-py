@@ -32,6 +32,7 @@ def scan_ports(host: str, ports_range: str, timeout: float = 0.5) -> dict:
 
 __all__ = [
     "scan_ports",
+    "ScanConfig",
     "TCPScanner",
     "PortScannerError",
     "PortRangeError",

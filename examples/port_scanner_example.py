@@ -1,5 +1,4 @@
-from scanner import PortScannerError, TCPScanner, scan_ports
-from scanner.core.config import ScanConfig
+from scanner import PortScannerError, ScanConfig, TCPScanner, scan_ports
 from scanner.utils.validators import parse_port_range
 
 

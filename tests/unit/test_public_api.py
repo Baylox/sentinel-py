@@ -4,7 +4,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from scanner import PortRangeError, scan_ports
+import scanner as scanner_pkg
+from scanner import PortRangeError, ScanConfig, scan_ports
 
 
 @patch("scanner.core.tcp.socket.gethostbyname")
@@ -27,3 +28,22 @@ def test_scan_ports_invalid_range():
     """An invalid port range surfaces as PortRangeError."""
     with pytest.raises(PortRangeError):
         scan_ports("127.0.0.1", "not-a-range")
+
+
+@patch("scanner.TCPScanner")
+def test_scan_ports_builds_scan_config(mock_scanner_class):
+    """The range string is parsed into a ScanConfig handed to TCPScanner.scan()."""
+    scan_ports("127.0.0.1", "20-25", timeout=1.5)
+
+    (config,) = mock_scanner_class.return_value.scan.call_args.args
+    assert isinstance(config, ScanConfig)
+    assert config.host == "127.0.0.1"
+    assert config.ports == (20, 25)
+    assert config.timeout == 1.5
+
+
+def test_public_names_are_exported():
+    """Names used by examples/ must stay reachable from the package root."""
+    for name in ("scan_ports", "ScanConfig", "TCPScanner", "PortScannerError"):
+        assert name in scanner_pkg.__all__
+        assert hasattr(scanner_pkg, name)
