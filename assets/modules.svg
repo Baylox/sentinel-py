@@ -38,26 +38,44 @@
         <text x="66" y="0" fill="#94a3b8">status</text>
         <text x="158" y="0" fill="#94a3b8">service</text>
 
-        <g transform="translate(0 24)">
+        <g transform="translate(0 24)" opacity="0">
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#64748b">22</text>
           <text x="66" y="0" fill="#0d9488" font-weight="600">open</text>
           <text x="158" y="0" fill="#64748b">ssh</text>
         </g>
-        <g transform="translate(0 46)">
+        <g transform="translate(0 46)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.2;0.28;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#64748b">80</text>
           <text x="66" y="0" fill="#0d9488" font-weight="600">open</text>
           <text x="158" y="0" fill="#64748b">http</text>
         </g>
-        <g transform="translate(0 68)" opacity="0.55">
+        <g transform="translate(0 68)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.55;0.55;0" keyTimes="0;0.36;0.44;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#94a3b8">23</text>
           <text x="66" y="0" fill="#94a3b8">closed</text>
           <text x="158" y="0" fill="#94a3b8">—</text>
         </g>
-        <g transform="translate(0 90)" opacity="0.35">
+        <g transform="translate(0 90)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.35;0.35;0" keyTimes="0;0.52;0.6;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#94a3b8">24</text>
           <text x="66" y="0" fill="#94a3b8">closed</text>
           <text x="158" y="0" fill="#94a3b8">—</text>
         </g>
+
+        <!-- blinking cursor -->
+        <rect x="0" y="102" width="8" height="2.5" fill="#0d9488">
+          <animate attributeName="opacity" values="1;1;0;0;1;1;0;0;1"
+                   keyTimes="0;0.06;0.07;0.14;0.15;0.22;0.23;0.3;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="14;36;58;80;102;102"
+                   keyTimes="0;0.12;0.28;0.44;0.6;1" calcMode="discrete"
+                   dur="6s" repeatCount="indefinite"/>
+        </rect>
       </g>
 
       <path d="M20 200 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
@@ -88,26 +106,44 @@
         <text x="66" y="0" fill="#94a3b8">code</text>
         <text x="158" y="0" fill="#94a3b8">server</text>
 
-        <g transform="translate(0 24)">
+        <g transform="translate(0 24)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.08;0.2;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#64748b">80</text>
           <text x="66" y="0" fill="#0284c7" font-weight="600">200</text>
           <text x="158" y="0" fill="#64748b">nginx</text>
         </g>
-        <g transform="translate(0 46)">
+        <g transform="translate(0 46)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.28;0.36;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#64748b">8080</text>
           <text x="66" y="0" fill="#0284c7" font-weight="600">200</text>
           <text x="158" y="0" fill="#64748b">Apache</text>
         </g>
-        <g transform="translate(0 68)" opacity="0.55">
+        <g transform="translate(0 68)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.55;0.55;0" keyTimes="0;0.44;0.52;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#94a3b8">8443</text>
           <text x="66" y="0" fill="#94a3b8">404</text>
           <text x="158" y="0" fill="#94a3b8">Caddy</text>
         </g>
-        <g transform="translate(0 90)" opacity="0.35">
+        <g transform="translate(0 90)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.35;0.35;0" keyTimes="0;0.6;0.68;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
           <text y="0" fill="#94a3b8">3000</text>
           <text x="66" y="0" fill="#94a3b8">—</text>
           <text x="158" y="0" fill="#94a3b8">refused</text>
         </g>
+
+        <!-- blinking cursor -->
+        <rect x="0" y="102" width="8" height="2.5" fill="#0284c7">
+          <animate attributeName="opacity" values="1;1;0;0;1;1;0;0;1"
+                   keyTimes="0;0.06;0.07;0.14;0.15;0.22;0.23;0.3;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="14;14;36;58;80;102;102"
+                   keyTimes="0;0.08;0.2;0.36;0.52;0.68;1" calcMode="discrete"
+                   dur="6s" repeatCount="indefinite"/>
+        </rect>
       </g>
 
       <path d="M20 200 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
@@ -135,13 +171,45 @@
 
       <g transform="translate(20 78)" font-size="12.5">
         <text y="0" fill="#94a3b8">issued to</text>
-        <text x="0" y="20" fill="#64748b">example.com</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.14;0.24;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text x="0" y="20" fill="#64748b">example.com</text>
+        </g>
 
         <text y="52" fill="#94a3b8">issued by</text>
-        <text x="0" y="72" fill="#64748b">R10</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.34;0.44;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text x="0" y="72" fill="#64748b">R10</text>
+        </g>
 
         <text y="104" fill="#94a3b8">days left</text>
-        <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15">67</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.54;0.62;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <!-- counts up as the certificate is read -->
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.55;0.56;0.585;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            18
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.585;0.586;0.61;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            41
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.61;0.611;0.635;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            59
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.635;0.636;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            67
+          </text>
+        </g>
       </g>
 
       <path d="M20 224 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
