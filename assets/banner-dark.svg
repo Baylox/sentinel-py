@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" width="880" height="240" role="img" aria-labelledby="bd-t">
+  <title id="bd-t">SentinelPy — Modular network reconnaissance for TCP, HTTP and TLS</title>
+
+  <defs>
+    <linearGradient id="bd-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f14"/>
+      <stop offset="0.55" stop-color="#0d1520"/>
+      <stop offset="1" stop-color="#0a1118"/>
+    </linearGradient>
+
+    <pattern id="bd-grid" width="22" height="22" patternUnits="userSpaceOnUse">
+      <path d="M22 0 V22 M0 22 H22" fill="none" stroke="#2dd4bf" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="bd-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.28"/>
+      <stop offset="0.6" stop-color="#2dd4bf" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="bd-scan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#2dd4bf" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#5eead4" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="bd-rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2dd4bf" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/>
+    </linearGradient>
+
+    <clipPath id="bd-clip"><rect width="880" height="240" rx="14"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#bd-clip)">
+    <rect width="880" height="240" fill="url(#bd-bg)"/>
+    <rect width="880" height="240" fill="url(#bd-grid)"/>
+    <ellipse cx="700" cy="120" rx="230" ry="150" fill="url(#bd-glow)"/>
+
+    <!-- radar sweep, right side -->
+    <g transform="translate(700 120)" opacity="0.85">
+      <circle r="34" fill="none" stroke="#2dd4bf" stroke-opacity="0.35" stroke-width="1"/>
+      <circle r="62" fill="none" stroke="#2dd4bf" stroke-opacity="0.22" stroke-width="1"/>
+      <circle r="90" fill="none" stroke="#2dd4bf" stroke-opacity="0.13" stroke-width="1"/>
+      <circle r="118" fill="none" stroke="#2dd4bf" stroke-opacity="0.07" stroke-width="1"/>
+      <path d="M-118 0 H118 M0 -118 V118" stroke="#2dd4bf" stroke-opacity="0.12" stroke-width="1"/>
+
+      <!-- expanding ping -->
+      <circle fill="none" stroke="#5eead4" stroke-width="1.5">
+        <animate attributeName="r" values="4;118" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-opacity" values="0.5;0" dur="4s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- rotating sweep -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="360" dur="4s" repeatCount="indefinite"/>
+        <path d="M0 0 L104 -56 A118 118 0 0 0 118 0 Z" fill="#2dd4bf" fill-opacity="0.14"/>
+        <path d="M0 0 L118 0" stroke="#5eead4" stroke-opacity="0.5" stroke-width="1.5"/>
+      </g>
+
+      <!-- contacts, lighting up as the sweep passes -->
+      <g fill="#5eead4">
+        <circle cx="48" cy="-30" r="2.8">
+          <animate attributeName="fill-opacity" values="1;1;0.15;0.15;1"
+                   keyTimes="0;0.06;0.3;0.94;1" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="86" cy="26" r="2.2">
+          <animate attributeName="fill-opacity" values="0.15;1;0.15;0.15"
+                   keyTimes="0;0.09;0.4;1" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="-40" cy="52" r="2.2">
+          <animate attributeName="fill-opacity" values="0.15;1;0.15;0.15"
+                   keyTimes="0;0.34;0.66;1" dur="4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="-72" cy="-38" r="2">
+          <animate attributeName="fill-opacity" values="0.15;0.15;1;0.15"
+                   keyTimes="0;0.62;0.68;1" dur="4s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+      <circle r="3.5" fill="#5eead4"/>
+    </g>
+
+    <!-- shield mark -->
+    <g transform="translate(60 74)">
+      <path d="M24 0 L48 10 V28 C48 44 37 56 24 60 C11 56 0 44 0 28 V10 Z"
+            fill="#2dd4bf" fill-opacity="0.06" stroke="#2dd4bf" stroke-width="2.25" stroke-linejoin="round"/>
+      <path d="M24 17 V43 M13 25 H35" stroke="#5eead4" stroke-width="2.25" stroke-linecap="round"/>
+    </g>
+
+    <text x="132" y="86" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+          font-size="44" font-weight="700" fill="#e6f4f1" letter-spacing="-1.4">Sentinel<tspan fill="#2dd4bf">Py</tspan></text>
+
+    <path d="M133 104 H420" stroke="url(#bd-rule)" stroke-width="1.5"/>
+
+    <text x="133" y="132" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif"
+          font-size="15.5" fill="#9fb3ae">Modular network reconnaissance for TCP, HTTP and TLS</text>
+
+    <!-- port trace -->
+    <g transform="translate(133 168)">
+      <path d="M0 22 H360" stroke="#1e3a36" stroke-width="1"/>
+      <g fill="#2dd4bf" fill-opacity="0.22">
+        <rect x="0" y="14" width="7" height="8" rx="1"/>
+        <rect x="22" y="10" width="7" height="12" rx="1"/>
+        <rect x="44" y="16" width="7" height="6" rx="1"/>
+        <rect x="110" y="16" width="7" height="6" rx="1"/>
+        <rect x="132" y="12" width="7" height="10" rx="1"/>
+        <rect x="198" y="15" width="7" height="7" rx="1"/>
+        <rect x="242" y="11" width="7" height="11" rx="1"/>
+        <rect x="286" y="16" width="7" height="6" rx="1"/>
+        <rect x="330" y="13" width="7" height="9" rx="1"/>
+      </g>
+      <g fill="#2dd4bf">
+        <rect x="66" y="0" width="7" height="22" rx="1">
+          <animate attributeName="fill-opacity" values="0.25;1;1;0.25"
+                   keyTimes="0;0.19;0.9;1" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="88" y="4" width="7" height="18" rx="1">
+          <animate attributeName="fill-opacity" values="0.25;0.25;1;1;0.25"
+                   keyTimes="0;0.24;0.27;0.9;1" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="154" y="2" width="7" height="20" rx="1">
+          <animate attributeName="fill-opacity" values="0.25;0.25;1;1;0.25"
+                   keyTimes="0;0.42;0.45;0.9;1" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="220" y="6" width="7" height="16" rx="1">
+          <animate attributeName="fill-opacity" values="0.25;0.25;1;1;0.25"
+                   keyTimes="0;0.6;0.63;0.9;1" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="308" y="3" width="7" height="19" rx="1">
+          <animate attributeName="fill-opacity" values="0.25;0.25;1;1;0.25"
+                   keyTimes="0;0.84;0.87;0.9;1" dur="4s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- scan line travelling across the trace -->
+      <g>
+        <animateTransform attributeName="transform" type="translate"
+                          values="-60 0; 360 0" dur="4s" repeatCount="indefinite"/>
+        <path d="M0 -4 V26" stroke="#5eead4" stroke-opacity="0.55" stroke-width="1.5"/>
+      </g>
+
+      <path d="M0 34 H360" stroke="url(#bd-scan)" stroke-width="2"/>
+    </g>
+
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" fill="#5f7f79">
+      <text x="133" y="222">tcp</text>
+      <text x="171" y="222" fill="#1e3a36">·</text>
+      <text x="196" y="222">http</text>
+      <text x="241" y="222" fill="#1e3a36">·</text>
+      <text x="266" y="222">ssl</text>
+      <text x="304" y="222" fill="#1e3a36">·</text>
+      <text x="329" y="222">rate-limited</text>
+    </g>
+
+    <rect x="0.75" y="0.75" width="878.5" height="238.5" rx="13.25" fill="none" stroke="#2dd4bf" stroke-opacity="0.16"/>
+  </g>
+</svg>

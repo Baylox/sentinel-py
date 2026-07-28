@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" role="img" aria-labelledby="rl-t">
+  <title id="rl-t">The four rate limiting presets: stealth at about one request per second, normal at twenty, aggressive at one hundred, and none with no delay</title>
+
+  <defs>
+    <linearGradient id="rl-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#94a3b8" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#94a3b8" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- travelling playhead: a soft window that lights the pulses it passes over -->
+    <linearGradient id="rl-head" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+
+    <mask id="rl-mask-normal" maskUnits="userSpaceOnUse" x="0" y="0" width="880" height="330">
+      <rect x="196" y="0" width="474" height="330" fill="#fff" fill-opacity="0.22"/>
+      <rect x="-150" y="0" width="150" height="330" fill="url(#rl-head)">
+        <animate attributeName="x" values="46;670" dur="6s" repeatCount="indefinite"/>
+      </rect>
+    </mask>
+
+    <mask id="rl-mask-aggressive" maskUnits="userSpaceOnUse" x="0" y="0" width="880" height="330">
+      <rect x="196" y="0" width="474" height="330" fill="#fff" fill-opacity="0.22"/>
+      <rect x="-90" y="0" width="90" height="330" fill="url(#rl-head)">
+        <animate attributeName="x" values="106;670" dur="1.5s" repeatCount="indefinite"/>
+      </rect>
+    </mask>
+  </defs>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+
+    <!-- header -->
+    <text x="0" y="14" font-size="10.5" fill="#94a3b8" letter-spacing="1.4">PRESET</text>
+    <text x="196" y="14" font-size="10.5" fill="#94a3b8" letter-spacing="1.4">REQUEST PATTERN OVER TIME</text>
+    <text x="880" y="14" font-size="10.5" fill="#94a3b8" letter-spacing="1.4" text-anchor="end">RATE</text>
+    <path d="M0 26 H880" stroke="#94a3b8" stroke-opacity="0.3"/>
+
+    <!-- ── stealth ── -->
+    <g transform="translate(0 68)">
+      <text y="0" font-size="15.5" font-weight="700" fill="#64748b">stealth</text>
+      <text y="19" font-size="11.5" fill="#94a3b8" font-family="system-ui, -apple-system, Segoe UI, sans-serif">1s, randomised</text>
+
+      <g fill="#0d9488">
+        <rect x="196" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;1;0.18;0.18"
+                   keyTimes="0;0.03;0.22;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="288" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;0.18;1;0.18;0.18"
+                   keyTimes="0;0.13;0.16;0.35;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="402" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;0.18;1;0.18;0.18"
+                   keyTimes="0;0.29;0.32;0.51;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="474" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;0.18;1;0.18;0.18"
+                   keyTimes="0;0.41;0.44;0.63;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="596" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;0.18;1;0.18;0.18"
+                   keyTimes="0;0.58;0.61;0.8;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="702" y="-13" width="3.5" height="18" rx="1.5" fill-opacity="0.18">
+          <animate attributeName="fill-opacity" values="0.18;0.18;1;0.18;0.18"
+                   keyTimes="0;0.76;0.79;0.98;1" dur="6s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+      <path d="M196 12 H780" stroke="url(#rl-fade)" stroke-width="1"/>
+
+      <text x="880" y="0" font-size="13" fill="#64748b" text-anchor="end">1 req/s</text>
+      <text x="878" y="19" font-size="11" fill="#94a3b8" text-anchor="end"
+            font-family="system-ui, -apple-system, Segoe UI, sans-serif">External targets</text>
+    </g>
+
+    <!-- ── normal ── -->
+    <g transform="translate(0 146)">
+      <rect x="0" y="-34" width="880" height="62" rx="8" fill="#0d9488" fill-opacity="0.05"/>
+      <text y="0" font-size="15.5" font-weight="700" fill="#0d9488">normal</text>
+      <text y="19" font-size="11.5" fill="#94a3b8" font-family="system-ui, -apple-system, Segoe UI, sans-serif">50ms, fixed</text>
+
+      <g fill="#0d9488" mask="url(#rl-mask-normal)">
+        <rect x="196" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="226" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="256" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="286" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="316" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="346" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="376" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="406" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="436" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="466" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="496" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="526" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="556" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="586" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="616" y="-13" width="3.5" height="18" rx="1.5"/>
+        <rect x="646" y="-13" width="3.5" height="18" rx="1.5"/>
+      </g>
+      <path d="M196 12 H780" stroke="url(#rl-fade)" stroke-width="1"/>
+
+      <text x="880" y="0" font-size="13" fill="#0d9488" text-anchor="end" font-weight="700">20 req/s</text>
+      <text x="880" y="19" font-size="11" fill="#0d9488" text-anchor="end" fill-opacity="0.8"
+            font-family="system-ui, -apple-system, Segoe UI, sans-serif">Default</text>
+    </g>
+
+    <!-- ── aggressive ── -->
+    <g transform="translate(0 224)">
+      <text y="0" font-size="15.5" font-weight="700" fill="#64748b">aggressive</text>
+      <text y="19" font-size="11.5" fill="#94a3b8" font-family="system-ui, -apple-system, Segoe UI, sans-serif">10ms, fixed</text>
+
+      <g fill="#f59e0b" mask="url(#rl-mask-aggressive)">
+        <rect x="196" y="-13" width="3" height="18" rx="1.5"/><rect x="207" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="218" y="-13" width="3" height="18" rx="1.5"/><rect x="229" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="240" y="-13" width="3" height="18" rx="1.5"/><rect x="251" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="262" y="-13" width="3" height="18" rx="1.5"/><rect x="273" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="284" y="-13" width="3" height="18" rx="1.5"/><rect x="295" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="306" y="-13" width="3" height="18" rx="1.5"/><rect x="317" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="328" y="-13" width="3" height="18" rx="1.5"/><rect x="339" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="350" y="-13" width="3" height="18" rx="1.5"/><rect x="361" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="372" y="-13" width="3" height="18" rx="1.5"/><rect x="383" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="394" y="-13" width="3" height="18" rx="1.5"/><rect x="405" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="416" y="-13" width="3" height="18" rx="1.5"/><rect x="427" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="438" y="-13" width="3" height="18" rx="1.5"/><rect x="449" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="460" y="-13" width="3" height="18" rx="1.5"/><rect x="471" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="482" y="-13" width="3" height="18" rx="1.5"/><rect x="493" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="504" y="-13" width="3" height="18" rx="1.5"/><rect x="515" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="526" y="-13" width="3" height="18" rx="1.5"/><rect x="537" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="548" y="-13" width="3" height="18" rx="1.5"/><rect x="559" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="570" y="-13" width="3" height="18" rx="1.5"/><rect x="581" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="592" y="-13" width="3" height="18" rx="1.5"/><rect x="603" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="614" y="-13" width="3" height="18" rx="1.5"/><rect x="625" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="636" y="-13" width="3" height="18" rx="1.5"/><rect x="647" y="-13" width="3" height="18" rx="1.5"/>
+        <rect x="658" y="-13" width="3" height="18" rx="1.5"/><rect x="669" y="-13" width="3" height="18" rx="1.5"/>
+      </g>
+      <path d="M196 12 H780" stroke="url(#rl-fade)" stroke-width="1"/>
+
+      <text x="880" y="0" font-size="13" fill="#64748b" text-anchor="end">100 req/s</text>
+      <text x="878" y="19" font-size="11" fill="#94a3b8" text-anchor="end"
+            font-family="system-ui, -apple-system, Segoe UI, sans-serif">Internal networks</text>
+    </g>
+
+    <!-- ── none ── -->
+    <g transform="translate(0 302)">
+      <text y="0" font-size="15.5" font-weight="700" fill="#64748b">none</text>
+      <text y="19" font-size="11.5" fill="#94a3b8" font-family="system-ui, -apple-system, Segoe UI, sans-serif">no delay</text>
+
+      <rect x="196" y="-13" width="474" height="18" rx="3" fill="#dc2626" fill-opacity="0.75">
+        <animate attributeName="fill-opacity" values="0.75;0.95;0.75" dur="1.6s" repeatCount="indefinite"/>
+      </rect>
+      <text x="204" y="0.5" font-size="10.5" fill="#ffffff" letter-spacing="0.6"
+            dominant-baseline="middle">SATURATED</text>
+      <text x="196" y="24" font-size="11" fill="#94a3b8"
+            font-family="system-ui, -apple-system, Segoe UI, sans-serif">Above 1000 ports, aggressive is reinstated automatically</text>
+
+      <text x="880" y="0" font-size="13" fill="#dc2626" text-anchor="end">unbounded</text>
+      <text x="878" y="19" font-size="11" fill="#94a3b8" text-anchor="end"
+            font-family="system-ui, -apple-system, Segoe UI, sans-serif">Local testing only</text>
+    </g>
+
+  </g>
+</svg>

@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-labelledby="mod-t">
+  <title id="mod-t">The three scan modules: tcp reports open ports and services, http reports server software and status codes, ssl reports certificate validity</title>
+
+  <defs>
+    <linearGradient id="m-tcp" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0d9488"/><stop offset="1" stop-color="#0d9488" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="m-http" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0284c7"/><stop offset="1" stop-color="#0284c7" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="m-ssl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0.15"/>
+    </linearGradient>
+    <pattern id="m-grid" width="14" height="14" patternUnits="userSpaceOnUse">
+      <path d="M14 0 V14 M0 14 H14" fill="none" stroke="#94a3b8" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+
+    <!-- ── tcp ─────────────────────────────── -->
+    <g transform="translate(0 0)">
+      <rect x="1" y="1" width="276" height="298" rx="11" fill="url(#m-grid)"
+            stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1.5"/>
+      <path d="M12 1 H266" stroke="url(#m-tcp)" stroke-width="3" stroke-linecap="round"/>
+
+      <g transform="translate(20 34)">
+        <circle cx="4" cy="-4" r="3.5" fill="#0d9488"/>
+        <text x="18" y="0" font-size="17" font-weight="700" fill="#0d9488" letter-spacing="0.5">tcp</text>
+        <text x="238" y="0" font-size="10.5" fill="#94a3b8" text-anchor="end" letter-spacing="0.6">CONNECT</text>
+      </g>
+
+      <path d="M20 52 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <!-- sample output -->
+      <g transform="translate(20 78)" font-size="12.5">
+        <text y="0" fill="#94a3b8">port</text>
+        <text x="66" y="0" fill="#94a3b8">status</text>
+        <text x="158" y="0" fill="#94a3b8">service</text>
+
+        <g transform="translate(0 24)" opacity="0">
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.12;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#64748b">22</text>
+          <text x="66" y="0" fill="#0d9488" font-weight="600">open</text>
+          <text x="158" y="0" fill="#64748b">ssh</text>
+        </g>
+        <g transform="translate(0 46)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.2;0.28;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#64748b">80</text>
+          <text x="66" y="0" fill="#0d9488" font-weight="600">open</text>
+          <text x="158" y="0" fill="#64748b">http</text>
+        </g>
+        <g transform="translate(0 68)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.55;0.55;0" keyTimes="0;0.36;0.44;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#94a3b8">23</text>
+          <text x="66" y="0" fill="#94a3b8">closed</text>
+          <text x="158" y="0" fill="#94a3b8">—</text>
+        </g>
+        <g transform="translate(0 90)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.35;0.35;0" keyTimes="0;0.52;0.6;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#94a3b8">24</text>
+          <text x="66" y="0" fill="#94a3b8">closed</text>
+          <text x="158" y="0" fill="#94a3b8">—</text>
+        </g>
+
+        <!-- blinking cursor -->
+        <rect x="0" y="102" width="8" height="2.5" fill="#0d9488">
+          <animate attributeName="opacity" values="1;1;0;0;1;1;0;0;1"
+                   keyTimes="0;0.06;0.07;0.14;0.15;0.22;0.23;0.3;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="14;36;58;80;102;102"
+                   keyTimes="0;0.12;0.28;0.44;0.6;1" calcMode="discrete"
+                   dur="6s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <path d="M20 200 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <g transform="translate(20 224)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" fill="#64748b">
+        <text y="0">Threaded, timeouts overlap</text>
+        <text y="22">Service named per open port</text>
+        <text y="44">Host resolved before scanning</text>
+      </g>
+    </g>
+
+    <!-- ── http ────────────────────────────── -->
+    <g transform="translate(301 0)">
+      <rect x="1" y="1" width="276" height="298" rx="11" fill="url(#m-grid)"
+            stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1.5"/>
+      <path d="M12 1 H266" stroke="url(#m-http)" stroke-width="3" stroke-linecap="round"/>
+
+      <g transform="translate(20 34)">
+        <circle cx="4" cy="-4" r="3.5" fill="#0284c7"/>
+        <text x="18" y="0" font-size="17" font-weight="700" fill="#0284c7" letter-spacing="0.5">http</text>
+        <text x="238" y="0" font-size="10.5" fill="#94a3b8" text-anchor="end" letter-spacing="0.6">GET</text>
+      </g>
+
+      <path d="M20 52 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <g transform="translate(20 78)" font-size="12.5">
+        <text y="0" fill="#94a3b8">port</text>
+        <text x="66" y="0" fill="#94a3b8">code</text>
+        <text x="158" y="0" fill="#94a3b8">server</text>
+
+        <g transform="translate(0 24)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.08;0.2;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#64748b">80</text>
+          <text x="66" y="0" fill="#0284c7" font-weight="600">200</text>
+          <text x="158" y="0" fill="#64748b">nginx</text>
+        </g>
+        <g transform="translate(0 46)" opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.28;0.36;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#64748b">8080</text>
+          <text x="66" y="0" fill="#0284c7" font-weight="600">200</text>
+          <text x="158" y="0" fill="#64748b">Apache</text>
+        </g>
+        <g transform="translate(0 68)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.55;0.55;0" keyTimes="0;0.44;0.52;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#94a3b8">8443</text>
+          <text x="66" y="0" fill="#94a3b8">404</text>
+          <text x="158" y="0" fill="#94a3b8">Caddy</text>
+        </g>
+        <g transform="translate(0 90)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.35;0.35;0" keyTimes="0;0.6;0.68;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text y="0" fill="#94a3b8">3000</text>
+          <text x="66" y="0" fill="#94a3b8">—</text>
+          <text x="158" y="0" fill="#94a3b8">refused</text>
+        </g>
+
+        <!-- blinking cursor -->
+        <rect x="0" y="102" width="8" height="2.5" fill="#0284c7">
+          <animate attributeName="opacity" values="1;1;0;0;1;1;0;0;1"
+                   keyTimes="0;0.06;0.07;0.14;0.15;0.22;0.23;0.3;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <animate attributeName="y" values="14;14;36;58;80;102;102"
+                   keyTimes="0;0.08;0.2;0.36;0.52;0.68;1" calcMode="discrete"
+                   dur="6s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <path d="M20 200 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <g transform="translate(20 224)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" fill="#64748b">
+        <text y="0">Server read from response header</text>
+        <text y="22">Status code and content type</text>
+        <text y="44">Apache, Nginx, IIS, Caddy, more</text>
+      </g>
+    </g>
+
+    <!-- ── ssl ─────────────────────────────── -->
+    <g transform="translate(602 0)">
+      <rect x="1" y="1" width="276" height="298" rx="11" fill="url(#m-grid)"
+            stroke="#94a3b8" stroke-opacity="0.4" stroke-width="1.5"/>
+      <path d="M12 1 H266" stroke="url(#m-ssl)" stroke-width="3" stroke-linecap="round"/>
+
+      <g transform="translate(20 34)">
+        <circle cx="4" cy="-4" r="3.5" fill="#7c3aed"/>
+        <text x="18" y="0" font-size="17" font-weight="700" fill="#7c3aed" letter-spacing="0.5">ssl</text>
+        <text x="238" y="0" font-size="10.5" fill="#94a3b8" text-anchor="end" letter-spacing="0.6">HANDSHAKE</text>
+      </g>
+
+      <path d="M20 52 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <g transform="translate(20 78)" font-size="12.5">
+        <text y="0" fill="#94a3b8">issued to</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.14;0.24;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text x="0" y="20" fill="#64748b">example.com</text>
+        </g>
+
+        <text y="52" fill="#94a3b8">issued by</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.34;0.44;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <text x="0" y="72" fill="#64748b">R10</text>
+        </g>
+
+        <text y="104" fill="#94a3b8">days left</text>
+        <g opacity="0">
+          <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.54;0.62;0.94;1"
+                   dur="6s" repeatCount="indefinite"/>
+          <!-- counts up as the certificate is read -->
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.55;0.56;0.585;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            18
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.585;0.586;0.61;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            41
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;0.61;0.611;0.635;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            59
+          </text>
+          <text x="0" y="124" fill="#7c3aed" font-weight="700" font-size="15" opacity="0">
+            <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.635;0.636;1"
+                     calcMode="discrete" dur="6s" repeatCount="indefinite"/>
+            67
+          </text>
+        </g>
+      </g>
+
+      <path d="M20 224 H257" stroke="#94a3b8" stroke-opacity="0.25"/>
+
+      <g transform="translate(20 248)" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="12.5" fill="#64748b">
+        <text y="0">Validity window and expiry flag</text>
+        <text y="22">One port, set by --ssl-port</text>
+      </g>
+    </g>
+
+  </g>
+</svg>
